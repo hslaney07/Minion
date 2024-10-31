@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const TopTracks = () => {
   const [topTracks, setTopTracks] = useState([]);
@@ -6,6 +7,7 @@ const TopTracks = () => {
   const [amount, setAmount] = useState(10); // Default amount
   const token = localStorage.getItem('spotifyToken');
 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchTopTracks = async () => {
       try {
@@ -35,6 +37,17 @@ const TopTracks = () => {
 
   return (
     <div className="container">
+    
+          <header className="header">
+          <Link to="/" className='header-title'>
+            <h1 >Spotify App</h1>
+          </Link>
+              <button onClick={() => navigate('/')} className="home-button">
+              Home
+            </button>
+          </header>
+        {/* Other components or content */}
+      <div className='container'>
       <header className="fav-songs-header">
         <h2>Your Top Tracks</h2>
       </header>
@@ -77,6 +90,7 @@ const TopTracks = () => {
             </a>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

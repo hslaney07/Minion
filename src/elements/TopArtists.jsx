@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const TopArtists = () => {
   const [favoriteArtists, setFavoriteArtists] = useState([]);
   const [timeRange, setTimeRange] = useState('medium_term'); // Default time range
   const [amount, setAmount] = useState(10); // Default amount
   const token = localStorage.getItem('spotifyToken');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFavoriteArtists = async () => {
@@ -35,7 +38,21 @@ const TopArtists = () => {
   }, [timeRange, amount]); // Re-fetch when timeRange or amount changes
 
   return (
-    <div className="container">
+    <div className='container'>
+   
+          <header className="header">
+          <Link to="/" className='header-title'>
+            <h1 >Spotify App</h1>
+            
+          </Link>
+              <button onClick={() => navigate('/')} className="home-button">
+              Home
+            </button>
+            
+          </header>
+        {/* Other components or content */}
+     
+    <div className='container'> 
       <header className="fav-songs-header">
         <h2>Your Top Artists</h2>
       </header>
@@ -77,6 +94,7 @@ const TopArtists = () => {
             </a>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

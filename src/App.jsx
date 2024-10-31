@@ -2,8 +2,6 @@
 import './App.css'
 import React, { useEffect, useState, useMemo } from 'react';  
 import { useNavigate } from 'react-router-dom';
-import TopArtists from './elements/TopArtists';
-import TopTracks from './elements/TopTracks';
 
 const App = () => {
   const navigate = useNavigate();
@@ -68,11 +66,15 @@ const App = () => {
           </button>
           </div>
         </header>
-        <div class="side-by-side">
-        <TopArtists />
-        <div className="divider" /> {/* Divider between the two components */}
-        <TopTracks />
-        </div>
+        <div className='container'>
+          <button className='artist-page' onClick={() => navigate('/FavoriteArtists')}>
+          Top Artists Page
+          </button>
+          
+          <button className='track-page' onClick={() => navigate('/FavoriteTracks')} >
+            Top Tracks Page
+          </button>
+          </div>
       </div>
     );
     }
