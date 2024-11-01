@@ -3,12 +3,11 @@ name: Deploy Vite App
 on:
   push:
     branches:
-      - main  # or the branch you’re using for deployment
+      - main  # or your target branch
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,9 +20,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build the app
+      - name: Debug environment
+        run: echo "VITE_SPOTIFY_CLIENT_ID is: ${VITE_SPOTIFY_CLIENT_ID:-not set}"
         env:
           VITE_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+
+      - name: Build the app
+        env:
+          VITE_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}  # Ensure this matches your secret name exactly
         run: npm run build
 
       - name: Deploy to GitHub Pages

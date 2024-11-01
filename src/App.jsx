@@ -8,6 +8,7 @@ const App = () => {
 
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 
+  console.log(CLIENT_ID)
   const REDIRECT_URI = 'http://localhost:5173/Spotify/callback';
   const SCOPES = 'user-read-private user-read-email user-top-read'; // Add more scopes as needed 
   const token = localStorage.getItem('spotifyToken');
