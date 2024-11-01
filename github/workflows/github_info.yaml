@@ -21,13 +21,12 @@ jobs:
         run: npm install
 
       - name: Debug environment
-        run: echo "VITE_SPOTIFY_CLIENT_ID is: ${VITE_SPOTIFY_CLIENT_ID:-not set}"
-        env:
-          VITE_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+        run: echo "VITE_SPOTIFY_CLIENT_ID is: ${{ secrets.SPOTIFY_CLIENT_ID }}"  # This will show if the secret is accessible
+        # IMPORTANT: Be cautious with this step in a public repo as it may expose your secret!
 
       - name: Build the app
         env:
-          VITE_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}  # Ensure this matches your secret name exactly
+          VITE_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}  # Use your secret here
         run: npm run build
 
       - name: Deploy to GitHub Pages
