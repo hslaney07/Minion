@@ -11,11 +11,11 @@ import TopTracks from './elements/TopTracks';
 const Main = () => (
   <Router>
     <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/callback" element={<Callback />} />
-      <Route path="/AccountInfo" element={<AccountInfo />} />
-      <Route path="/FavoriteArtists" element={<TopArtists />} />
-      <Route path="/FavoriteTracks" element={<TopTracks />} />
+      <Route path="/Spotify" element={<App />} />
+      <Route path="/Spotify/callback" element={<Callback />} />
+      <Route path="/Spotify/AccountInfo" element={<AccountInfo />} />
+      <Route path="/Spotify/FavoriteArtists" element={<TopArtists />} />
+      <Route path="/Spotify/FavoriteTracks" element={<TopTracks />} />
     </Routes>
   </Router>
 );

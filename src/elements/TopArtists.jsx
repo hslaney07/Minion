@@ -41,11 +41,11 @@ const TopArtists = () => {
     <div className='container'>
    
           <header className="header">
-          <Link to="/" className='header-title'>
+          <Link to="/Spotify" className='header-title'>
             <h1 >Spotify App</h1>
             
           </Link>
-              <button onClick={() => navigate('/')} className="home-button">
+              <button onClick={() => navigate('/Spotify')} className="home-button">
               Home
             </button>
             

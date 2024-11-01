@@ -6,8 +6,9 @@ import { useNavigate } from 'react-router-dom';
 const App = () => {
   const navigate = useNavigate();
 
-  const CLIENT_ID = '2e48ee219d5c4740a3463066e4f70319';
-  const REDIRECT_URI = 'http://localhost:5173/callback';
+  const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+
+  const REDIRECT_URI = 'http://localhost:5173/Spotify/callback';
   const SCOPES = 'user-read-private user-read-email user-top-read'; // Add more scopes as needed 
   const token = localStorage.getItem('spotifyToken');
 
@@ -61,17 +62,17 @@ const App = () => {
                 className="account-icon"
               />
             )}
-          <button onClick={() => navigate('/AccountInfo')} className="auth-button">
+          <button onClick={() => navigate('/Spotify/AccountInfo')} className="auth-button">
             Account Info
           </button>
           </div>
         </header>
         <div className='container'>
-          <button className='artist-page' onClick={() => navigate('/FavoriteArtists')}>
+          <button className='artist-page' onClick={() => navigate('/Spotify/FavoriteArtists')}>
           Top Artists Page
           </button>
           
-          <button className='track-page' onClick={() => navigate('/FavoriteTracks')} >
+          <button className='track-page' onClick={() => navigate('/Spotify/FavoriteTracks')} >
             Top Tracks Page
           </button>
           </div>
