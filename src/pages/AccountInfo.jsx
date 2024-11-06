@@ -1,11 +1,10 @@
 
-import React, { useEffect, useState, useMemo } from 'react';  
+import React, { useEffect, useState } from 'react';  
 import { useNavigate, Link } from 'react-router-dom';
 const AccountInfo = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('spotifyToken');
-;
   const navigate = useNavigate();
 
   useEffect (() => {
@@ -37,7 +36,7 @@ const AccountInfo = () => {
   const handleLogout = () => {
     localStorage.removeItem('spotifyToken');
     window.open('https://accounts.spotify.com/logout', '_blank');
-    window.location.href = 'https://github.com/hslaney07/Spotify';
+    window.location.href = 'https://hslaney07.github.io/Spotify/';
   };
 
 

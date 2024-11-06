@@ -3,22 +3,17 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const App = () => {
-  const navigate = useNavigate();
-  console.log('here');
+  const [userData, setUserData] = useState(null);
+
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+  const REDIRECT_URI = 'https://hslaney07.github.io/Spotify/';
   const SCOPES = 'user-read-private user-read-email user-top-read';
-  const token = localStorage.getItem('spotifyToken');
-
-  const REDIRECT_URI = 'https://hslaney07.github.io/Spotify/#/callback/';
-
   const AUTH_URL = useMemo(() => {
     return `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}`;
   }, [CLIENT_ID, SCOPES]);
 
-  const [userData, setUserData] = useState(null);
-  console.log('token is')
-  console.log(token);
-
+  const token = localStorage.getItem('spotifyToken');
+  const navigate = useNavigate();
   
   useEffect(() => {
     // Check if the URL contains an access token
@@ -30,7 +25,7 @@ const App = () => {
       if (accessToken) {
         localStorage.setItem('spotifyToken', accessToken);
         // Redirect to the main app without the token in the URL
-        window.location.replace(REDIRECT_URI); // This will reload the page
+        window.location.replace('https://hslaney07.github.io/Spotify/') 
       }
     }
   }, []);
