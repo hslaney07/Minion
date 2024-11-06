@@ -2,36 +2,27 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Callback = () => {
-    useEffect(() => {
-        const hash = window.location.hash;
-        let token = '';
+  const navigate = useNavigate();
 
-        console.log(hash);
-    
-        if (hash) {
-          const queryString = hash.substring(1);
+  useEffect(() => {
+    const hash = window.location.hash;
+    let token = '';
+    console.log(hash)
+    localStorage.setItem('spotifyToken', hash);
 
-          // Create a URLSearchParams object
-          const params = new URLSearchParams(queryString);
+    if (hash) {
+      const queryString = hash.substring(10); // Remove '#'
+      const params = new URLSearchParams(queryString);
+      token = params.get('access_token');
 
-          // Get the access token
-          token = params.get('access_token');
-    
-          // Log the access token and other info as needed
-          console.log('Access Token:', token);
-          localStorage.setItem('spotifyToken', token);
-          console.log('Access Token:', token);
-    
-          // Optional: Log expiration time
-          const expiresIn = hash.split('&')
-            .find(elem => elem.startsWith('expires_in'))
-            .split('=')[1];
-          console.log('Expires In:', expiresIn);
-    
-          // Redirect to the main page without the hash
-          window.location.replace('http://localhost:5173');
-        }
-      }, []);
+      if (token) {
+        localStorage.setItem('spotifyToken', token);
+        //navigate('/'); // Redirect to the main page or ho me page after saving the token
+      } else {
+        console.error('Access token not found in the URL');
+      }
+    }
+  }, [navigate]);
 
   return <div>Loading...</div>;
 };

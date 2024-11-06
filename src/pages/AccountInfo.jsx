@@ -37,7 +37,7 @@ const AccountInfo = () => {
   const handleLogout = () => {
     localStorage.removeItem('spotifyToken');
     window.open('https://accounts.spotify.com/logout', '_blank');
-    window.location.href = 'http://localhost:5173';
+    window.location.href = 'https://github.com/hslaney07/Spotify';
   };
 
 

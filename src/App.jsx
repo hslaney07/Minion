@@ -1,99 +1,107 @@
-
-import './App.css'
+import './App.css';
 import React, { useEffect, useState, useMemo } from 'react';  
 import { useNavigate } from 'react-router-dom';
 
 const App = () => {
   const navigate = useNavigate();
-
+  console.log('here');
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-
-  console.log(CLIENT_ID)
-  const REDIRECT_URI = 'http://localhost:5173/Spotify/callback';
-  const SCOPES = 'user-read-private user-read-email user-top-read'; // Add more scopes as needed 
+  const SCOPES = 'user-read-private user-read-email user-top-read';
   const token = localStorage.getItem('spotifyToken');
+
+  const REDIRECT_URI = 'https://hslaney07.github.io/Spotify/#/callback/';
 
   const AUTH_URL = useMemo(() => {
     return `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}`;
-  }, [CLIENT_ID, REDIRECT_URI, SCOPES]);
+  }, [CLIENT_ID, SCOPES]);
 
   const [userData, setUserData] = useState(null);
-
-  const handleLogin = () => {
-    window.location.href = AUTH_URL; // Redirect to Spotify login
-  };
+  console.log('token is')
+  console.log(token);
 
   
-  const fetchUserData  = async() => {
-    try {
-      const response = await fetch('https://api.spotify.com/v1/me', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data)
-        setUserData(data); // Update state with the fetched data
-      } else {
-        console.error('Failed to fetch user data');
+  useEffect(() => {
+    // Check if the URL contains an access token
+    const hash = window.location.hash;
+    if (hash) {
+      const params = new URLSearchParams(hash.replace('#', '?'));
+      const accessToken = params.get('access_token');
+      
+      if (accessToken) {
+        localStorage.setItem('spotifyToken', accessToken);
+        // Redirect to the main app without the token in the URL
+        window.location.replace(REDIRECT_URI); // This will reload the page
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
     }
-  };
-
-  useEffect (() => {
-    fetchUserData();
   }, []);
+  
 
-  if(token){
-    if(userData){
-      return (
-        <div className="container">
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!token) return;
+      try {
+        const response = await fetch('https://api.spotify.com/v1/me', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data);
+        } else {
+          console.error('Failed to fetch user data, token may be expired');
+          localStorage.removeItem('spotifyToken');  // Clear token if invalid
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [token]);
+
+  if (token && userData) {
+    return (
+      <div className="container">
         <header className="header">
           <h1>Spotify App</h1>
           <div className="account-info">
-          {userData.images && userData.images[0] && (
+            {userData.images && userData.images[0] && (
               <img
                 src={userData.images[0].url}
                 alt="User Profile"
                 className="account-icon"
               />
             )}
-          <button onClick={() => navigate('/Spotify/AccountInfo')} className="auth-button">
-            Account Info
-          </button>
+            <button onClick={() => navigate('/Spotify/AccountInfo')} className="auth-button">
+              Account Info
+            </button>
           </div>
         </header>
-        <div className='container'>
-          <button className='artist-page' onClick={() => navigate('/Spotify/FavoriteArtists')}>
-          Top Artists Page
+        <div className="container">
+          <button className="artist-page" onClick={() => navigate('/Spotify/FavoriteArtists')}>
+            Top Artists Page
           </button>
-          
-          <button className='track-page' onClick={() => navigate('/Spotify/FavoriteTracks')} >
+          <button className="track-page" onClick={() => navigate('/Spotify/FavoriteTracks')}>
             Top Tracks Page
           </button>
-          </div>
+        </div>
       </div>
     );
-    }
   }
+
   return (
     <div className="container">
       <header className="header">
         <h1>Spotify App</h1>
-        <button onClick={handleLogin} className="auth-button">
+        <button onClick={() => window.location.href = AUTH_URL} className="auth-button">
           Login with Spotify
         </button>
       </header>
     </div>
   );
-
-
 };
 
 export default App;
-
