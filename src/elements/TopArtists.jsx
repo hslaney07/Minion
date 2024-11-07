@@ -39,23 +39,17 @@ const TopArtists = () => {
 
   return (
     <div className='container'>
-   
           <header className="header">
           <Link to="/Spotify" className='header-title'>
             <h1 >Spotify App</h1>
-            
           </Link>
               <button onClick={() => navigate('/Spotify')} className="home-button">
               Home
             </button>
-            
           </header>
-        {/* Other components or content */}
-     
-    <div className='container'> 
-      <header className="fav-songs-header">
-        <h2>Your Top Artists</h2>
-      </header>
+        <header>
+          <h2>Your Top Artists</h2>
+        </header>
       <div className="filters">
         <label htmlFor="time-range">Time Range:</label>
         <select
@@ -95,7 +89,6 @@ const TopArtists = () => {
           </div>
         ))}
         </div>
-      </div>
     </div>
   );
 };

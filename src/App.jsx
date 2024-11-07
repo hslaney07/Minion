@@ -59,10 +59,10 @@ const App = () => {
 
   if (token && userData) {
     return (
-      <div className="container">
+      <>
         <header className="header">
           <h1>Spotify App</h1>
-          <div className="account-info">
+          <div className="header-right">
             {userData.images && userData.images[0] && (
               <img
                 src={userData.images[0].url}
@@ -70,7 +70,7 @@ const App = () => {
                 className="account-icon"
               />
             )}
-            <button onClick={() => navigate('/Spotify/AccountInfo')} className="auth-button">
+            <button onClick={() => navigate('/Spotify/AccountInfo')} className="top-right-button">
               Account Info
             </button>
           </div>
@@ -83,7 +83,7 @@ const App = () => {
             Top Tracks Page
           </button>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -91,9 +91,11 @@ const App = () => {
     <div className="container">
       <header className="header">
         <h1>Spotify App</h1>
-        <button onClick={() => window.location.href = AUTH_URL} className="auth-button">
+        <div className='header-right'>
+        <button onClick={() => window.location.href = AUTH_URL} className="top-right-button">
           Login with Spotify
         </button>
+        </div>
       </header>
     </div>
   );

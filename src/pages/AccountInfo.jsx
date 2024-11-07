@@ -36,27 +36,25 @@ const AccountInfo = () => {
   const handleLogout = () => {
     localStorage.removeItem('spotifyToken');
     window.open('https://accounts.spotify.com/logout', '_blank');
-    window.location.href = 'https://hslaney07.github.io/Spotify/';
+    window.location.href = 'http://127.0.0.1:5173/Spotify/';
   };
 
-
     return (
-      <div>
-        <div>
+      <div className="container">
           <header className="header">
-          <Link to="/Spotify" className='header-title'>
-            <h1 >Spotify App</h1>
-          </Link>
+            <Link to="/Spotify" className='header-title'>
+              <h1 >Spotify App</h1>
+            </Link>
               <button onClick={() => navigate('/Spotify')} className="home-button">
               Home
             </button>
-            <button onClick={handleLogout}  className="auth-button">
-              Logout
-            </button>
+            <div className="header-right">
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+            </div>
           </header>
-        {/* Other components or content */}
-        </div>
-        <div>
+        <div className='container'>
         {error && <p className="error-message">{error}</p>}
           {userData ? (
             <div className="user-data">
@@ -75,7 +73,7 @@ const AccountInfo = () => {
               )}
             </div>
           ) : (
-            <p>user Data Not Available</p>
+            <p>User Data Not Available</p>
           )}
         </div>
       </div>
