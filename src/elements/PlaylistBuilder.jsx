@@ -23,12 +23,13 @@ const PlaylistBuilder = () => {
   const [liveness, setLiveness] = useState('');
   const [loudness, setLoudness] = useState('');
   const [popularity, setPopularity] = useState('');
-  const [songLimit, setSongLimit] = useState(10);
+  const [songLimit, setSongLimit] = useState(30);
   const [acousticness, setAcousticness] = useState('');
   const [instrumentalness, setInstrumentalness] = useState('');
   const [speechiness, setSpeechiness] = useState('');
   const [valence, setValence] = useState('');
   const [tempo, setTempo] = useState('');
+  const [key, setKey] = useState('');
 
   const getID = async (name, type = 'artist') => {
     try {
@@ -139,6 +140,11 @@ const PlaylistBuilder = () => {
     try {
       const params = new URLSearchParams();
 
+      if (!(artistNames.length > 0) && ! (genres.length > 0) && !(trackNames.length > 0)){
+        alert('Need to provide at least one seed (artist, genre, or track)');
+        return;
+      }
+
       if (artistNames.length > 0) {
         const artistIds = await Promise.all(
           artistNames.map(name => getID(name, 'artist'))
@@ -167,6 +173,7 @@ const PlaylistBuilder = () => {
       if (speechiness !== '') params.append('target_speechiness', speechiness);
       if (valence !== '') params.append('target_valence', valence);
       if (tempo !== '') params.append('target_tempo', tempo);
+      if (key !== '') params.append('target_key', key);
 
       params.append('limit', songLimit);
       
@@ -439,7 +446,20 @@ const PlaylistBuilder = () => {
               onChange={(e) => setValence(e.target.value === '' ? '' : parseFloat(e.target.value))}
             />
           </label>
-          
+          <label>
+            <a href="https://en.wikipedia.org/wiki/Pitch_class#Other_ways_to_label_pitch_classes" target="_blank" rel="noopener noreferrer">
+            Key (-1-11):
+            </a>
+            <input
+              type="number"
+              step="1"
+              min="-1"
+              max="11"
+              placeholder="2"
+              value={key}
+              onChange={(e) => setKey(e.target.value === '' ? '' : parseFloat(e.target.value))}
+            />
+          </label>
           <label>
             Tempo (50-200):
             <input
