@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';  
 import { useNavigate, Link } from 'react-router-dom';
 const AccountInfo = () => {
@@ -54,10 +53,10 @@ const AccountInfo = () => {
               </button>
             </div>
           </header>
-        <div className='container'>
-        {error && <p className="error-message">{error}</p>}
+        < >
+        {error && <p >{error}</p>}
           {userData ? (
-            <div className="user-data">
+            <div className='user-data' >
               <h2>User Info</h2>
               <p><strong>Name:</strong> {userData.display_name}</p>
               <p><strong>Email:</strong> {userData.email}</p>
@@ -75,7 +74,7 @@ const AccountInfo = () => {
           ) : (
             <p>User Data Not Available</p>
           )}
-        </div>
+        </>
       </div>
     );
 };

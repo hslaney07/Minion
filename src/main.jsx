@@ -4,8 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App';
 import AccountInfo from './pages/AccountInfo';
 import TopArtists from './elements/TopArtists';
-import './index.css';
+import './css-files/index.css';
 import TopTracks from './elements/TopTracks';
+import PlaylistBuilder from './elements/PlaylistBuilder'
 
 const Main = () => (
   <Router>
@@ -14,6 +15,7 @@ const Main = () => (
       <Route path="/Spotify/AccountInfo" element={<AccountInfo />} />
       <Route path="/Spotify/FavoriteArtists" element={<TopArtists />} />
       <Route path="/Spotify/FavoriteTracks" element={<TopTracks />} />
+      <Route path="/Spotify/PlayListBuilder" element={<PlaylistBuilder />} />
     </Routes>
   </Router>
 );

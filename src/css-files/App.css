@@ -13,6 +13,30 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+.header-title {
+  text-decoration: none;
+  color: inherit; /* Keeps the header’s original color */
+  cursor: pointer;
+}
+
+.header-title:hover {
+    color:pink;
+}
+
+.header {
+  background-color:#1DB954;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -21,13 +45,9 @@ a {
 a:hover {
   color: #535bf2;
 }
+
 body {
   margin: 0;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
 }
 
 button {
@@ -42,10 +62,13 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
-  background-color:#1DB954;
+  background-color:white;
   border-color: #646cff;
+  color:#1DB954;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -58,22 +81,8 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-/* Header at the top of the page */
-.header {
-  background-color:hsl(168, 79%, 7%);
-  width: 100%;
-  display: flex;
   justify-content: center;
-  align-items: center;
-}
-
-/* Auth button positioned at the top-right corner */
-.top-right-button {  
-  padding: 0.8rem 1rem; /* Adjust button size as needed */
-  font-size: 1rem; /* Adjust font size relative to the viewport */
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 
@@ -103,62 +112,12 @@ button:focus-visible {
   align-items: center;
 }
 
-.account-info {
-  display: flex;
-  
-  align-items: center; /* Vertically center the image and button */
+/* Auth button positioned at the top-right corner */
+.top-right-button {  
+  padding: 0.8rem 1rem; /* Adjust button size as needed */
+  font-size: 1rem; /* Adjust font size relative to the viewport */
 }
 
-.artists-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  width: 100%; /* Ensures the grid takes full width of the container */
-  box-sizing: border-box; 
-}
-
-.artist-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-  max-width: 250px;
-}
-
-.artist-image {
-  width: 100%;
-  border-radius: 8px;
-}
-
-.filters {
-  margin-bottom: 20px; /* Space below the filters */
-  display: flex;
-  gap: 10px; /* Space between filter items */
-}
-
-label {
-  font-weight: 600;
-}
-
-.logout-button{
-  border-radius: 8px;
-  color: white;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #747171;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-.logout-button:hover {
-  background-color:red;
-  border-color: #646cff;
-}
 .artist-page{
   margin: 2em;
 }
