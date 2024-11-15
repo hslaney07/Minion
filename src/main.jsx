@@ -6,7 +6,8 @@ import AccountInfo from './pages/AccountInfo';
 import TopArtists from './elements/TopArtists';
 import './css-files/index.css';
 import TopTracks from './elements/TopTracks';
-import PlaylistBuilder from './elements/PlaylistBuilder'
+import PlaylistBuilder from './elements/PlaylistBuilder';
+import Modal from 'react-modal';
 
 const Main = () => (
   <Router>
@@ -19,5 +20,7 @@ const Main = () => (
     </Routes>
   </Router>
 );
+
+Modal.setAppElement('#root');
 
 ReactDOM.createRoot(document.getElementById('root')).render(<Main />);

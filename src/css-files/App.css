@@ -121,3 +121,13 @@ button:focus-visible {
 .artist-page{
   margin: 2em;
 }
+
+.header-title {
+  text-decoration: none;
+  color: inherit; /* Keeps the header’s original color */
+  cursor: pointer;
+}
+
+.header-title:hover {
+    color:pink;
+}

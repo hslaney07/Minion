@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Modal from 'react-modal';
 
 const PlaylistBuilder = () => {
   const token = localStorage.getItem('spotifyToken');
   const navigate = useNavigate();
+
+  const [showMoreInfo, setShowMoreInfo] = useState(false);
 
   const [recommendations, setRecommendations] = useState(null);
   
@@ -11,6 +14,8 @@ const PlaylistBuilder = () => {
 
   const [artistNames, setArtistNames] = useState([]);
   const [artistName, setArtistName] = useState('');
+
+  const [availableGenres, setAvailableGenres] = useState([]);
 
   const [genres, setGenres] = useState([]);
   const [genre, setGenre] = useState('');
@@ -30,6 +35,31 @@ const PlaylistBuilder = () => {
   const [valence, setValence] = useState('');
   const [tempo, setTempo] = useState('');
   const [key, setKey] = useState('');
+
+  useEffect(() => {
+    fetchAvailableGenresFromSpotify();
+  }, []);
+  
+  const fetchAvailableGenresFromSpotify = async () => {
+    try {
+      const response = await fetch('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch genre seeds');
+      }
+
+      const data = await response.json();
+      setAvailableGenres(data.genres); 
+    } catch (err) {
+      alert(err.message);
+      console.error('Error fetching genres:', err);
+    }
+  };
+  
 
   const getID = async (name, type = 'artist') => {
     try {
@@ -134,6 +164,29 @@ const PlaylistBuilder = () => {
       alert('Failed to create playlist');
     }
   };
+
+  async function getTrackAudioFeatures(trackId) {
+    const endpoint = `https://api.spotify.com/v1/audio-features/${trackId}`;
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Failed to get track audio features:", error);
+      return null;
+    }
+  }
   
 
   const getRecommendations = async () => {
@@ -193,7 +246,17 @@ const PlaylistBuilder = () => {
       }
 
       const data = await response.json();
-      setRecommendations(data.tracks);
+
+      const audioFeatures = await Promise.all(data.tracks.map(track => getTrackAudioFeatures(track.id)));
+
+      // combine tracks with their audio features
+      const tracksWithAudioFeatures = data.tracks.map((track, index) => ({
+        ...track,
+        audioFeatures: audioFeatures[index]
+      }));
+      
+      setRecommendations(tracksWithAudioFeatures);
+    
     } catch (error) {
       console.error('Error fetching recommendations:', error);
     }
@@ -248,11 +311,20 @@ const PlaylistBuilder = () => {
     setTrackName(e.target.value);
   };
 
-  const addTrack = () => {
+  const addTrack = async () => {
     if (trackNames.length >= 5) {
       alert('You can only add up to 5 tracks.');
       return; 
     }
+
+    console.log('looking up ', trackName.trim())
+
+    const trackID = await getID(trackName.trim(), 'track');
+
+    console.log('track id is ', trackID)
+
+    const info = await getTrackAudioFeatures(trackID);
+
     if (trackName.trim()) {
       setTrackNames([...trackNames, trackName]); 
       setTrackName(''); 
@@ -266,10 +338,20 @@ const PlaylistBuilder = () => {
     setTrackNames(updatedTracks); 
   };
 
-  const removeTrackFromPlaylist = (index) => {
-    setRecommendations(prevRecommendations => 
-      prevRecommendations.filter((_, i) => i !== index)
+  const removeTrackFromPlaylist = (trackId) => {
+    setRecommendations(prevRecommendations =>
+      prevRecommendations.filter(track => track.id !== trackId) // Filter out the track by its ID
     );
+  };
+
+  const handleToggle = () => {
+    setShowMoreInfo(!showMoreInfo);
+
+    if (!showMoreInfo) {
+      console.log("Info pop-ups are enabled");
+    } else {
+      console.log("Info pop-ups are disabled");
+    }
   };
 
   return (
@@ -284,7 +366,20 @@ const PlaylistBuilder = () => {
       </header>
 
       <div>
-        <h2 className='user-data'>Build Your Recommended Playlist</h2>
+          <div className='playlist-header'>
+            <h2>Build Your Recommended Playlist</h2>
+            <div className='header-right'>
+              <label className="switch"> 
+                  <input
+                    type="checkbox"
+                    checked={showMoreInfo}
+                    onChange={handleToggle}
+                  />
+                <span className="slider"></span>
+              </label>
+              <span className="switch-label">Allow Audio Analysis Info</span>
+            </div> 
+        </div>
         <div className='playlist-params'>
             <label>Enter Songs:
             <input
@@ -304,23 +399,28 @@ const PlaylistBuilder = () => {
             </div>
             </label>
             <label>Enter Genres:
-            <input
-              type="text"
-              value={genre}
-              onChange={handleGenreChange}
-              placeholder="Enter genre name"
-            />
-            <button onClick={addGenre}>Add Genre</button>
-            <div className="song-list">
-              {genres.length > 0 && genres.map((genre, index) => (
-                <div key={index} className="song-item">
-                  <span>{genre}</span>
-                  <button onClick={() => removeGenre(index)}>Remove</button>
-                </div>
-              ))}
-            </div>
+            <select
+                value={genre}
+                onChange={handleGenreChange}
+                placeholder="Select genre"
+              >
+                <option value="">Select a genre</option>
+                {availableGenres.map((genre, index) => (
+                  <option key={index} value={genre}>
+                    {genre}
+                  </option>
+                ))}
+              </select>
+              <button onClick={addGenre}>Add Genre</button>
+              <div className="song-list">
+            {genres.length > 0 && genres.map((genre, index) => (
+              <div key={index} className="song-item">
+                <span>{genre}</span>
+                <button onClick={() => removeGenre(index)}>Remove</button>
+              </div>
+            ))}
+          </div>
             </label>
-
             <label>Enter Artists:
             <input
               type="text"
@@ -396,18 +496,6 @@ const PlaylistBuilder = () => {
               placeholder="0.5"
               value={acousticness}
               onChange={(e) => setAcousticness(e.target.value === '' ? '' : parseFloat(e.target.value))}
-            />
-          </label>
-          <label>
-            Energy (0-1):
-            <input
-              type="number"
-              step="0.1"
-              min="0"
-              max="1"
-              placeholder="0.5"
-              value={energy}
-              onChange={(e) => setEnergy(e.target.value === '' ? '' : parseFloat(e.target.value))}
             />
           </label>
           <label>
@@ -511,33 +599,58 @@ const PlaylistBuilder = () => {
           Generate Playlist
         </button>
 
-    
+              
         {recommendations && (
+          <>
           <div className="playlist-list">
-          {recommendations.map((track, index) => (
-            <div key={index} className="playlist-track-card">
-              <img
-                src={track.album.images[0].url} // Display the first image
-                alt={track.name}
-                className="playlist-album-image"
-              />
-              <div className='playlist-info'>
-              <h3>{track.name}</h3>
-              <p>{track.artists.map(artist => artist.name).join(', ')}</p>
-              <p>{track.album.name}</p>
+            {recommendations.map((track) => (
+              <div key={track.id} className="playlist-track-card">
+                <div className='track-info'>
+                <img
+                  src={track.album.images[0].url} // Display the first image
+                  alt={track.name}
+                  className="playlist-album-image"
+                />
+              <div className="playlist-info">
+                <h3>{track.name}</h3>
+                <p>{track.artists.map((artist) => artist.name).join(', ')}</p>
+                <p>{track.album.name}</p>
               </div>
-              <button onClick={() => removeTrackFromPlaylist(index)} className="remove-track-button" title="Remove this song from playlist">
+              <button
+                onClick={() => removeTrackFromPlaylist(track.id)} // Pass track.id here
+                className="remove-track-button"
+                title="Remove this song from playlist"
+              >
                 X
               </button>
-            </div>
-          ))}
-          <button id="create-playlist" onClick={createPlaylist}>
-          Create Playlist
-        </button>
+              </div>
+            {showMoreInfo && (
+              <div className="audio-features">
+                <h4>Audio Analysis:</h4>
+                <div className="audio-grid">
+                  <p>Danceability: {track.audioFeatures.danceability}</p>
+                  <p>Liveness: {track.audioFeatures.liveness}</p>
+                  <p>Loudness: {track.audioFeatures.loudness}</p>
+                  <p>Acousticness: {track.audioFeatures.acousticness}</p>
+                  <p>Energy: {track.audioFeatures.energy}</p>
+                  <p>Instrumentalness: {track.audioFeatures.instrumentalness}</p>
+                  <p>Speechiness: {track.audioFeatures.speechiness}</p>
+                  <p>Valence: {track.audioFeatures.valence}</p>
+                  <p>Key: {track.audioFeatures.key}</p>
+                  <p>Tempo: {track.audioFeatures.tempo}</p>
+                  <p>Popularity: {track.popularity}</p>
+                </div>
+              </div>
+            )}
           </div>
-          
-        )}
-    </div>
+        ))}
+      </div>
+      <button id="create-playlist" className="create-playlist-button" onClick={createPlaylist}>
+        Create Playlist
+      </button>
+      </>
+    )}
+  </div>
   );
 };
 
