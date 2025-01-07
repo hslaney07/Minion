@@ -95,7 +95,6 @@
 
 .track-info {
   display: flex;
-  align-items: center;
   width: 100%;
 }
 
@@ -189,6 +188,7 @@ label {
   font-size: 1.5rem;
   cursor: pointer;
   margin-left: auto;
+
 }
 
 .remove-track-button:hover {
