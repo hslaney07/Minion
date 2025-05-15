@@ -14,7 +14,7 @@ const Main = () => (
   <Provider store={store}>
     <Router>
       <Routes>
-        <Route path="/Spotify/" element={<App />} />
+        <Route path="/" element={<App />} />
         <Route path="/Spotify/AccountInfo" element={<AccountInfo />} />
         <Route path="/Spotify/FavoriteArtists" element={<TopArtists />} />
         <Route path="/Spotify/FavoriteTracks" element={<TopTracks />} />
