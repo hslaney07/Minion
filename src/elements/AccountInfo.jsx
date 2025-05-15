@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';  
+import { useEffect, useState } from 'react';  
 import { useNavigate, Link } from 'react-router-dom';
+
 const AccountInfo = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);

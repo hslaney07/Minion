@@ -1,24 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App';
-import AccountInfo from './pages/AccountInfo';
-import TopArtists from './elements/TopArtists';
+import store from './store';
 import './css-files/index.css';
-import TopTracks from './elements/TopTracks';
-import PlaylistBuilder from './elements/PlaylistBuilder';
 import Modal from 'react-modal';
+import { Provider } from 'react-redux';
+import ReactDOM from 'react-dom/client';
+import TopTracks from './elements/TopTracks';
+import TopArtists from './elements/TopArtists';
+import AccountInfo from './elements/AccountInfo';
+import PlaylistBuilder from './elements/PlaylistBuilder';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const Main = () => (
-  <Router>
-    <Routes >
-      <Route path="/Spotify/" element={<App />} />
-      <Route path="/Spotify/AccountInfo" element={<AccountInfo />} />
-      <Route path="/Spotify/FavoriteArtists" element={<TopArtists />} />
-      <Route path="/Spotify/FavoriteTracks" element={<TopTracks />} />
-      <Route path="/Spotify/PlayListBuilder" element={<PlaylistBuilder />} />
-    </Routes>
-  </Router>
+  <Provider store={store}>
+    <Router>
+      <Routes>
+        <Route path="/Spotify/" element={<App />} />
+        <Route path="/Spotify/AccountInfo" element={<AccountInfo />} />
+        <Route path="/Spotify/FavoriteArtists" element={<TopArtists />} />
+        <Route path="/Spotify/FavoriteTracks" element={<TopTracks />} />
+        <Route path="/Spotify/PlayListBuilder" element={<PlaylistBuilder />} />
+      </Routes>
+    </Router>
+  </Provider>
 );
 
 Modal.setAppElement('#root');
