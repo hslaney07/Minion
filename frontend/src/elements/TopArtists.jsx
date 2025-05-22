@@ -1,38 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import{ useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { showError } from '../services/alertServices';
 
 const TopArtists = () => {
   const [favoriteArtists, setFavoriteArtists] = useState([]);
-  const [timeRange, setTimeRange] = useState('medium_term'); // Default time range
-  const [amount, setAmount] = useState(10); // Default amount
-  const token = localStorage.getItem('spotifyToken');
+  const [timeRange, setTimeRange] = useState('medium_term'); 
+  const [amount, setAmount] = useState(10); 
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFavoriteArtists = async () => {
-      try {
-        const response = await fetch(
-          `https://api.spotify.com/v1/me/top/artists?limit=${amount}&time_range=${timeRange}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          setFavoriteArtists(data.items); // Update state with the fetched data
-        } else {
-          console.error('Failed to fetch user data');
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-top-artists`, {
+        method: 'POST',
+        credentials: 'include',
+          headers: {
+          'Content-Type': 'application/json',
+        },
+          body: JSON.stringify({ 
+          amount: amount,
+          timeRange: timeRange
+          }),
+      });
+  
+      if (!response.ok) {
+        showError(`Failed to fetch top artists`)
       }
-    };
+      
+      const data = await response.json();
+      setFavoriteArtists(data.items); 
+
+    } catch (error) {
+      showError(`Error fetching favorite artists `, `<a href="#">${error}</a>`);
+    }
+  };
 
     fetchFavoriteArtists();
   }, [timeRange, amount]); // Re-fetch when timeRange or amount changes
@@ -76,7 +78,7 @@ const TopArtists = () => {
         {favoriteArtists.map((artist) => (
           <div key={artist.id} className="artist-card">
             <img
-              src={artist.images[0]?.url} // Display the first image
+              src={artist.images[0]?.url} 
               alt={artist.name}
               className="artist-image"
             />

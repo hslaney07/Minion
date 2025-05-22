@@ -7,6 +7,7 @@ require('dotenv').config();
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URI, credentials: true }));
 app.use(cookieParser());
+app.use(express.json())
 
 const scopes = [
   'user-read-private',
@@ -16,7 +17,6 @@ const scopes = [
   'playlist-modify-private'
 ].join(' ');
 
-// 1. Login route
 app.get('/login', (req, res) => {
   const redirectUri = 'https://accounts.spotify.com/authorize?' +
     new URLSearchParams({
@@ -29,7 +29,6 @@ app.get('/login', (req, res) => {
   res.redirect(redirectUri);
 });
 
-// 2. Callback route
 app.get('/callback', async (req, res) => {
   const code = req.query.code || null;
 
@@ -72,7 +71,6 @@ app.get('/callback', async (req, res) => {
   }
 });
 
-// 3. Protected route
 app.get('/me', async (req, res) => {
   const token = req.cookies.spotifyAccessToken;
   if (!token) return res.sendStatus(401);
@@ -102,6 +100,162 @@ app.post('/logout', (req, res) => {
     sameSite: 'Lax'
   });
   res.sendStatus(200);
+});
+
+app.post('/create-playlist', async (req, res) => {
+  const { name, description, public: isPublic } = req.body;
+
+  const accessToken = req.cookies.spotifyAccessToken;
+  if (!accessToken) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    // Get user's Spotify ID
+    const userRes = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userRes.data.id;
+
+    // Create playlist
+    const playlistRes = await axios.post(
+      `https://api.spotify.com/v1/users/${userId}/playlists`,
+      {
+        name,
+        description: description,
+        public: isPublic,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    res.json(playlistRes.data);
+  } catch (err) {
+    console.error('Create Playlist Error:', err.response?.data || err);
+    res.status(500).json({ error: 'Failed to create playlist' });
+  }
+});
+
+app.post('/get-playlist-content', async (req, res) => {
+  const token = req.cookies.spotifyAccessToken;
+  if (!token) return res.sendStatus(401);
+
+  const playlistId = req.body.playlistId;
+
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        headers: {
+        Authorization: `Bearer ${token}` 
+        }
+    });
+    res.json(response.data);
+  } catch (err) {
+    res.sendStatus(401);
+  }
+});
+
+app.post('/add-tracks-to-playlist', async (req, res) => {
+  const token = req.cookies.spotifyAccessToken;
+  if (!token) return res.sendStatus(401);
+
+  const { playlistId, trackUris } = req.body;
+
+  try {
+    const addTracksResponse = await axios.post(
+      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+      {
+        uris: trackUris, // This is the actual POST body
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    res.json(addTracksResponse.data);
+  } catch (err) {
+    console.error('Error adding tracks:', err.response?.data || err.message);
+    res.sendStatus(401);
+  }
+});
+
+app.post('/search-for-playlist-items', async (req, res) => {
+  const token = req.cookies.spotifyAccessToken;
+  if (!token) return res.sendStatus(401);
+
+  const requestType = req.body.requestType;
+
+  try {
+    const response = await axios.get(
+      `https://api.spotify.com/v1/search`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          q: requestType,
+          type: 'playlist',
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    console.error('Error searching for playlist items:', err.response?.data || err.message);
+    res.sendStatus(401);
+  }
+});
+
+app.post('/get-top-artists', async (req, res) => {
+  const token = req.cookies.spotifyAccessToken;
+  if (!token) return res.sendStatus(401);
+
+  const {amount, timeRange} = req.body;
+
+  try {
+    const response = await axios.get(
+      `https://api.spotify.com/v1/me/top/artists?limit=${amount}&time_range=${timeRange}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    console.error('Error searching for playlist items:', err.response?.data || err.message);
+    res.sendStatus(401);
+  }
+});
+
+app.post('/get-top-tracks', async (req, res) => {
+  const token = req.cookies.spotifyAccessToken;
+  if (!token) return res.sendStatus(401);
+
+  const {amount, timeRange} = req.body;
+
+  try {
+    const response = await axios.get(
+      `https://api.spotify.com/v1/me/top/tracks?limit=${amount}&time_range=${timeRange}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    console.error('Error searching for playlist items:', err.response?.data || err.message);
+    res.sendStatus(401);
+  }
 });
 
 const PORT = 8888;

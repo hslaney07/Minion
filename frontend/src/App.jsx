@@ -1,5 +1,5 @@
 import './css-files/App.css';
-import React, { useEffect, useState } from 'react';  
+import { useEffect, useState } from 'react';  
 import { useNavigate } from 'react-router-dom';
 import { showError } from './services/alertServices';
 
@@ -70,7 +70,7 @@ const App = () => {
           <h1>{import.meta.env.VITE_APP_NAME}</h1>
         </header>
         <div className="container">
-          <button className="artist-page" onClick={window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`}>
+          <button className="artist-page" onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`}>
             Login with Spotify
           </button>
         </div>

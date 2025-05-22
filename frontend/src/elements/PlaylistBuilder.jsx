@@ -118,6 +118,9 @@ const PlaylistBuilder = () => {
   
     try {
       const playlistData = await createPlaylist(name, description, isPublic)
+      if (playlistData == null){
+        return;
+      }
       const trackUris = playlist.recommendations.map(track => track.uri);
       console.log(trackUris)
   
@@ -183,7 +186,9 @@ const processTracks = (tracksCollected, limit) => {
 
   const getTracksFromSimilarPlaylists = async (requestType) => {
     const playlist_items = await searchForPlaylistItems(requestType)
-    
+    if (playlist_items == null){
+      return [];
+    }
     var playlistTracks = await getTracksFromPlaylists(playlist_items)
     return playlistTracks;
 
@@ -198,17 +203,18 @@ const processTracks = (tracksCollected, limit) => {
     const fetchPromises = playlistIDs.map(id => getPlaylistContent(id));
     
     try {
-      const allContents = await Promise.all(fetchPromises);
-      
-      const uniqueContents = Array.from(
-        new Map(allContents.flat().map(track => [track.id, track])).values()
-      );
-      
-    
-      return Object.values(uniqueContents);
-    } catch (error) {
-      showError(`Error fetching playlist contents`,  `<a href="#">${error}</a>`)
-    }
+    const allContents = await Promise.all(fetchPromises);
+    const validContents = allContents.filter(content => Array.isArray(content));
+
+    const uniqueContents = Array.from(
+      new Map(validContents.flat().map(track => [track.id, track])).values()
+    );
+
+    return uniqueContents;
+  } catch (error) {
+    showError(`Error fetching playlist contents`, `<a href="#">${error}</a>`);
+    return [];
+  }
   }
 
   function shuffleArray(array) {

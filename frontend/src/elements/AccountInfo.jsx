@@ -38,8 +38,7 @@ const AccountInfo = () => {
         showError(`Logout failed`);
       }
     } catch (err) {
-      console.error("Logout error:", err);
-      alert("An error occurred during logout.");
+      showError(`Logout Error`, `<a href="#">${error}</a>`)
     }
   };
 

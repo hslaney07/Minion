@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { showError } from '../services/alertServices';
 
 const TopTracks = () => {
   const [topTracks, setTopTracks] = useState([]);
   const [timeRange, setTimeRange] = useState('medium_term'); // Default time range
   const [amount, setAmount] = useState(10); // Default amount
-  const token = localStorage.getItem('spotifyToken');
 
   const navigate = useNavigate();
   useEffect(() => {
     const fetchTopTracks = async () => {
-      try {
-        const response = await fetch(
-          `https://api.spotify.com/v1/me/top/tracks?limit=${amount}&time_range=${timeRange}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-top-tracks`, {
+        method: 'POST',
+        credentials: 'include',
+          headers: {
+          'Content-Type': 'application/json',
+        },
+          body: JSON.stringify({ 
+          amount: amount,
+          timeRange: timeRange
+          }),
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          setTopTracks(data.items);
-        } else {
-          console.error('Failed to fetch top tracks');
-        }
-      } catch (error) {
+      if (!response.ok) {
+        showError('Failed to fetch top tracks')
+      }
+
+      const data = await response.json();
+      setTopTracks(data.items)
+    } catch (error) {
         console.error('Error fetching top tracks:', error);
       }
     };
-
     fetchTopTracks();
   }, [timeRange, amount]); // Re-fetch when timeRange or amount changes
 
