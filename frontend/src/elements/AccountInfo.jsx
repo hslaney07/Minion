@@ -1,42 +1,46 @@
 import { useEffect, useState } from 'react';  
 import { useNavigate, Link } from 'react-router-dom';
+import { showError } from '../services/alertServices';
 
 const AccountInfo = () => {
   const [userData, setUserData] = useState(null);
-  const [error, setError] = useState(null);
-  const token = localStorage.getItem('spotifyToken');
   const navigate = useNavigate();
 
-  useEffect (() => {
-    const fetchUserData  = async() => {
-        
+  useEffect(() => {
+    const fetchUserData = async () => {
       try {
-        const response = await fetch('https://api.spotify.com/v1/me', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data)
-          setUserData(data); // Update state with the fetched data
-        } else {
-          console.error('Failed to fetch user data');
-        }
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/me`, {
+          credentials: 'include' // Send cookies!
+        })
+          .then(res => res.json())
+          .then(data => setUserData(data));
+         
       } catch (error) {
-        console.error('Error fetching data:', error);
+        showError(`Error fetching data`, `<a href="#">${error}</a>`)
       }
     };
 
     fetchUserData();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('spotifyToken');
-    window.open('https://accounts.spotify.com/logout', '_blank');
-    window.location.href = import.meta.env.VITE_HOMEPAGE_URL;
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (res.ok) {
+        // Optionally clear local state here if needed
+        window.location.href = import.meta.env.VITE_HOMEPAGE_URL;
+      } else {
+        showError(`Logout failed`);
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+      alert("An error occurred during logout.");
+    }
   };
 
     return (
@@ -55,7 +59,6 @@ const AccountInfo = () => {
             </div>
           </header>
         < >
-        {error && <p >{error}</p>}
           {userData ? (
             <div className='user-data' >
               <h2>User Info</h2>
