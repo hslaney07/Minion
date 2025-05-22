@@ -6,7 +6,7 @@ const App = () => {
   const [userData, setUserData] = useState(null);
 
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-  const REDIRECT_URI = 'https://stirring-kangaroo-2cf80d.netlify.app/Spotify/';
+  const REDIRECT_URI = 'https://stirring-kangaroo-2cf80d.netlify.app/';
   const SCOPES = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private';
   const AUTH_URL = useMemo(() => {
     return `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}`;
@@ -25,7 +25,7 @@ const App = () => {
       if (accessToken) {
         localStorage.setItem('spotifyToken', accessToken);
         // Redirect to the main app without the token in the URL
-        window.location.replace('https://stirring-kangaroo-2cf80d.netlify.app/Spotify/') 
+        window.location.replace('https://stirring-kangaroo-2cf80d.netlify.app/') 
       }
     }
   }, []);
