@@ -36,16 +36,16 @@ const AccountInfo = () => {
   const handleLogout = () => {
     localStorage.removeItem('spotifyToken');
     window.open('https://accounts.spotify.com/logout', '_blank');
-    window.location.href = 'http://127.0.0.1:5173/Spotify/';
+    window.location.href = 'https://stirring-kangaroo-2cf80d.netlify.app/';
   };
 
     return (
       <div className="container">
           <header className="header">
-            <Link to="/Spotify" className='header-title'>
+            <Link to="/" className='header-title'>
               <h1 >Spotify App</h1>
             </Link>
-              <button onClick={() => navigate('/Spotify')} className="home-button">
+              <button onClick={() => navigate('/')} className="home-button">
               Home
             </button>
             <div className="header-right">

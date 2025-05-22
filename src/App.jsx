@@ -70,22 +70,22 @@ const App = () => {
                 className="account-icon"
               />
             )}
-            <button onClick={() => navigate('/Spotify/AccountInfo')} className="top-right-button">
+            <button onClick={() => navigate('/AccountInfo')} className="top-right-button">
               Account Info
             </button>
           </div>
         </header>
         <div className="container">
-          <button className="artist-page" onClick={() => navigate('/Spotify/FavoriteArtists')}>
+          <button className="artist-page" onClick={() => navigate('/FavoriteArtists')}>
             Top Artists Page
           </button>
-          <button className="track-page" onClick={() => navigate('/Spotify/FavoriteTracks')}>
+          <button className="track-page" onClick={() => navigate('/FavoriteTracks')}>
             Top Tracks Page
           </button>
-          <button className="artist-page" onClick={() => navigate('/Spotify/PlaylistBuilder')}>
+          <button className="artist-page" onClick={() => navigate('/PlaylistBuilder')}>
             Playlist Builder
           </button>
-          <button className="track-page" onClick={() => navigate('/Spotify/MusicPlaybackControl')}>
+          <button className="track-page" onClick={() => navigate('/MusicPlaybackControl')}>
             Music Control
           </button>
         </div>
