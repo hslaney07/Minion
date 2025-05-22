@@ -32,7 +32,7 @@ export const showPlaylistCreationDialog = async (defaultName, onCreate) => {
       <div style="margin-top: 10px;">
         <label>
           Playlist Description
-          <input id="playlist-description" class="swal2-input" placeholder="Generated with Spotify App">
+          <input id="playlist-description" class="swal2-input" placeholder="Generated with Minion">
         </label>
       </div>
       <div style="text-align: left; margin-top: 10px;">

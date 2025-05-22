@@ -49,7 +49,7 @@ export const createPlaylist = async(playlistName, description, isPublic) => {
           },
           body: JSON.stringify({
             name: playlistName,
-            description: description ?? 'Generated with Spotify App',
+            description: description ?? `Generated with ${import.meta.env.VITE_APP_NAME}`,
             public: isPublic,
           }),
         }

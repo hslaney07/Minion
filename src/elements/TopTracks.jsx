@@ -40,7 +40,7 @@ const TopTracks = () => {
     
           <header className="header">
           <Link to="/" className='header-title'>
-            <h1 >Spotify App</h1>
+            <h1 >{import.meta.env.VITE_APP_NAME}</h1>
           </Link>
               <button onClick={() => navigate('/')} className="home-button">
               Home

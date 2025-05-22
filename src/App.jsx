@@ -6,7 +6,7 @@ const App = () => {
   const [userData, setUserData] = useState(null);
 
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-  const REDIRECT_URI = 'https://stirring-kangaroo-2cf80d.netlify.app/';
+  const REDIRECT_URI = import.meta.env.VITE_HOMEPAGE_URL;
   const SCOPES = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private';
   const AUTH_URL = useMemo(() => {
     return `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}`;
@@ -25,7 +25,7 @@ const App = () => {
       if (accessToken) {
         localStorage.setItem('spotifyToken', accessToken);
         // Redirect to the main app without the token in the URL
-        window.location.replace('https://stirring-kangaroo-2cf80d.netlify.app/') 
+        window.location.replace(REDIRECT_URI) 
       }
     }
   }, []);
@@ -61,7 +61,7 @@ const App = () => {
     return (
       <>
         <header className="header">
-          <h1>Spotify App</h1>
+          <h1>{import.meta.env.VITE_APP_NAME}</h1>
           <div className="header-right">
             {userData.images && userData.images[0] && (
               <img
@@ -96,7 +96,7 @@ const App = () => {
   return (
     <div className="container">
       <header className="header">
-        <h1>Spotify App</h1>
+        <h1>{import.meta.env.VITE_APP_NAME}</h1>
         <div className='header-right'>
         <button onClick={() => window.location.href = AUTH_URL} className="top-right-button">
           Login with Spotify
