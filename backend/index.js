@@ -71,20 +71,50 @@ app.get('/callback', async (req, res) => {
   }
 });
 
-app.get('/me', async (req, res) => {
-  const token = req.cookies.spotifyAccessToken;
-  if (!token) return res.sendStatus(401);
+async function spotifyRequest(req, res, requestFn) {
+  let accessToken = req.cookies.spotifyAccessToken;
+  const refreshToken = req.cookies.spotifyRefreshToken;
 
   try {
+    return await requestFn(accessToken);
+  } catch (err) {
+    if (err.response?.status === 401 && refreshToken) {
+      // Try refreshing the token
+      try {
+        const refreshed = await refreshAccessToken(refreshToken);
+        accessToken = refreshed.access_token;
+
+        // Update the cookie
+        res.cookie('spotifyAccessToken', accessToken, {
+          httpOnly: true,
+          secure: true,
+          maxAge: refreshed.expires_in * 1000,
+          sameSite: 'Lax'
+        });
+
+        // Retry the original request with new token
+        return await requestFn(accessToken);
+      } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError.response?.data || refreshError.message);
+        return res.sendStatus(401);
+      }
+    } else {
+      console.error('Spotify request failed:', err.response?.data || err.message);
+      return res.sendStatus(err.response?.status || 500);
+    }
+  }
+}
+
+
+app.get('/me', async (req, res) => {
+  await spotifyRequest(req, res, async (token) => {
     const response = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
-    res.json(response.data);
-  } catch (err) {
-    res.sendStatus(401);
-  }
+    res.json(response.data)
+  });
 });
 
 
@@ -104,20 +134,16 @@ app.post('/logout', (req, res) => {
 
 app.post('/create-playlist', async (req, res) => {
   const { name, description, public: isPublic } = req.body;
-
-  const accessToken = req.cookies.spotifyAccessToken;
-  if (!accessToken) return res.status(401).json({ error: 'Unauthorized' });
-
-  try {
-    // Get user's Spotify ID
+  await spotifyRequest(req, res, async (token) => {
+    // get user's Spotify ID
     const userRes = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     const userId = userRes.data.id;
 
-    // Create playlist
+    // create playlist
     const playlistRes = await axios.post(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
       {
@@ -127,48 +153,37 @@ app.post('/create-playlist', async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       }
     );
 
     res.json(playlistRes.data);
-  } catch (err) {
-    console.error('Create Playlist Error:', err.response?.data || err);
-    res.status(500).json({ error: 'Failed to create playlist' });
-  }
+  });
 });
 
 app.post('/get-playlist-content', async (req, res) => {
-  const token = req.cookies.spotifyAccessToken;
-  if (!token) return res.sendStatus(401);
-
   const playlistId = req.body.playlistId;
 
-  try {
+  await spotifyRequest(req, res, async (token) => {
     const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         headers: {
         Authorization: `Bearer ${token}` 
         }
     });
     res.json(response.data);
-  } catch (err) {
-    res.sendStatus(401);
-  }
+  });
 });
 
 app.post('/add-tracks-to-playlist', async (req, res) => {
-  const token = req.cookies.spotifyAccessToken;
-  if (!token) return res.sendStatus(401);
-
   const { playlistId, trackUris } = req.body;
 
-  try {
+  await spotifyRequest(req, res, async (token) => {
     const addTracksResponse = await axios.post(
       `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
-        uris: trackUris, // This is the actual POST body
+        uris: trackUris, 
       },
       {
         headers: {
@@ -179,19 +194,13 @@ app.post('/add-tracks-to-playlist', async (req, res) => {
     );
 
     res.json(addTracksResponse.data);
-  } catch (err) {
-    console.error('Error adding tracks:', err.response?.data || err.message);
-    res.sendStatus(401);
-  }
+  });
 });
 
 app.post('/search-for-playlist-items', async (req, res) => {
-  const token = req.cookies.spotifyAccessToken;
-  if (!token) return res.sendStatus(401);
-
   const requestType = req.body.requestType;
 
-  try {
+  await spotifyRequest(req, res, async (token) => {
     const response = await axios.get(
       `https://api.spotify.com/v1/search`,
       {
@@ -206,19 +215,13 @@ app.post('/search-for-playlist-items', async (req, res) => {
     );
 
     res.json(response.data);
-  } catch (err) {
-    console.error('Error searching for playlist items:', err.response?.data || err.message);
-    res.sendStatus(401);
-  }
+  });
 });
 
 app.post('/get-top-artists', async (req, res) => {
-  const token = req.cookies.spotifyAccessToken;
-  if (!token) return res.sendStatus(401);
-
   const {amount, timeRange} = req.body;
 
-  try {
+  await spotifyRequest(req, res, async (token) => {
     const response = await axios.get(
       `https://api.spotify.com/v1/me/top/artists?limit=${amount}&time_range=${timeRange}`,
       {
@@ -229,19 +232,13 @@ app.post('/get-top-artists', async (req, res) => {
     );
 
     res.json(response.data);
-  } catch (err) {
-    console.error('Error searching for playlist items:', err.response?.data || err.message);
-    res.sendStatus(401);
-  }
+  });
 });
 
 app.post('/get-top-tracks', async (req, res) => {
-  const token = req.cookies.spotifyAccessToken;
-  if (!token) return res.sendStatus(401);
-
   const {amount, timeRange} = req.body;
 
-  try {
+  await spotifyRequest(req, res, async (token) => {
     const response = await axios.get(
       `https://api.spotify.com/v1/me/top/tracks?limit=${amount}&time_range=${timeRange}`,
       {
@@ -252,11 +249,26 @@ app.post('/get-top-tracks', async (req, res) => {
     );
 
     res.json(response.data);
-  } catch (err) {
-    console.error('Error searching for playlist items:', err.response?.data || err.message);
-    res.sendStatus(401);
-  }
+  });
 });
+
+async function refreshAccessToken(refreshToken) {
+  const response = await axios.post('https://accounts.spotify.com/api/token',
+    new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+      client_id: process.env.SPOTIFY_CLIENT_ID,
+      client_secret: process.env.SPOTIFY_CLIENT_SECRET,
+    }).toString(),
+    {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }
+  );
+
+  return response.data; // contains access_token and optionally a new refresh_token
+}
+
+
 
 const PORT = 8888;
 app.listen(PORT, () => {
