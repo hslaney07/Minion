@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { showError, showSuccess, showPlaylistCreationDialog} from '../services/alertServices.jsx';
 import { getPlaylistContent, searchForPlaylistItems, createPlaylist, addTracksToPlaylist} from '../helpers/SpotifyAPICalls.jsx';
-import { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistName, setPlaylistLimit} from '../store.jsx';
+import { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit} from '../store.jsx';
 
 const PlaylistBuilder = () => {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ const PlaylistBuilder = () => {
   };
 
   const handleCreatePlaylist = () => {
-    showPlaylistCreationDialog(playlist.name, (result) => {
+    showPlaylistCreationDialog((result) => {
       const { name, description, isPublic } = result;
       createSpotifyPlaylist(name, description, isPublic);
     });
@@ -309,14 +309,6 @@ const processTracks = (tracksCollected, limit) => {
               max="100"
               value={playlist.limit}
               onChange={(e) => dispatch(setPlaylistLimit(e.target.value === '' ? '' : parseFloat(e.target.value)))}
-            />
-          </label>
-          <label>
-            Playlist Name:
-            <input
-              type="text"
-              value={playlist.name}
-              onChange={(e) => dispatch(setPlaylistName(e.target.value))}
             />
           </label>
         </div>

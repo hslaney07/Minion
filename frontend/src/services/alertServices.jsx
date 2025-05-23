@@ -19,20 +19,20 @@ export const showSuccess = (message) => {
   });
 };
 
-export const showPlaylistCreationDialog = async (defaultName, onCreate) => {
+export const showPlaylistCreationDialog = async (onCreate) => {
   return Swal.fire({
     title: "Create New Playlist",
     html: `
       <div style="margin-top: 10px;">
         <label>
           Playlist Name
-          <input type="text" id="playlist-name" class="swal2-input" placeholder="${defaultName}">
+          <input type="text" id="playlist-name" class="swal2-input" placeholder="Minion Playlist" value="Minion Playlist">
         </label>
       </div>
       <div style="margin-top: 10px;">
         <label>
           Playlist Description
-          <input id="playlist-description" class="swal2-input" placeholder="Generated with Minion">
+          <input id="playlist-description" class="swal2-input" placeholder="Generated with Minion" value="Generated with Minion">
         </label>
       </div>
       <div style="text-align: left; margin-top: 10px;">

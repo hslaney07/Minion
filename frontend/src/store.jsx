@@ -3,7 +3,7 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const initialState = {
   inputs: { artistName: '', genre: '', trackName: '' },
   seeds: { artists: [], genres: [], tracks: [] },
-  playlist: { name: 'My Playlist', limit: 30, recommendations: [] }
+  playlist: { limit: 30, recommendations: [] }
 };
 
 const playlistSlice = createSlice({
@@ -23,14 +23,11 @@ const playlistSlice = createSlice({
     setRecommendations: (state, action) => {
       state.playlist.recommendations = action.payload;
     },
-    setPlaylistName: (state, action) => {
-      state.playlist.name = action.payload;
-    },
     setPlaylistLimit: (state, action) => {
       state.playlist.limit = action.payload;
     }
   }
 });
 
-export const { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit, setPlaylistName } = playlistSlice.actions;
+export const { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit } = playlistSlice.actions;
 export default configureStore({ reducer: playlistSlice.reducer });
