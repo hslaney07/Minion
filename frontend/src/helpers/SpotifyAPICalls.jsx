@@ -35,7 +35,7 @@ export const createPlaylist = async(playlistName, description, isPublic) => {
       body: JSON.stringify({
         name: playlistName,
         description: description ?? `Generated with ${import.meta.env.VITE_APP_NAME}`,
-        public: isPublic,
+        isPublic: isPublic,
       }),
     });
 
@@ -68,12 +68,14 @@ export const addTracksToPlaylist = async (playlistId, trackUris) => {
     });
 
     if (!addTracksResponse.ok) {
-        showError('Failed to add tracks to playlist');
-    }    
+      showError('Failed to add tracks to playlist');
+      return null;
+    }
+    
+    return addTracksResponse;
 }
 
 export const searchForPlaylistItems = async (requestType) => {
-  console.log(requestType)
   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/search-for-playlist-items`, {
       method: 'POST',
       credentials: 'include', 

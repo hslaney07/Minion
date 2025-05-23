@@ -133,7 +133,8 @@ app.post('/logout', (req, res) => {
 });
 
 app.post('/create-playlist', async (req, res) => {
-  const { name, description, public: isPublic } = req.body;
+  const { name, description, isPublic } = req.body;
+
   await spotifyRequest(req, res, async (token) => {
     // get user's Spotify ID
     const userRes = await axios.get('https://api.spotify.com/v1/me', {
@@ -177,13 +178,13 @@ app.post('/get-playlist-content', async (req, res) => {
 });
 
 app.post('/add-tracks-to-playlist', async (req, res) => {
-  const { playlistId, trackUris } = req.body;
+  const { playlistId, uris } = req.body;
 
   await spotifyRequest(req, res, async (token) => {
     const addTracksResponse = await axios.post(
       `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
-        uris: trackUris, 
+        uris: uris, 
       },
       {
         headers: {

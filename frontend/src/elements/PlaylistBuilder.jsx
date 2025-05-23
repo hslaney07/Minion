@@ -122,11 +122,12 @@ const PlaylistBuilder = () => {
         return;
       }
       const trackUris = playlist.recommendations.map(track => track.uri);
-      console.log(trackUris)
   
-      await addTracksToPlaylist(playlistData.id, trackUris)
-      
-      showSuccess(`Playlist has been created!`)
+      const response = await addTracksToPlaylist(playlistData.id, trackUris)
+      if (response && response.ok) {
+        showSuccess('Playlist has been created!');
+      }
+
     } catch (error) {
       showError(`Playlist was not created!`, `<a href="#">${error}</a>`)
     }
@@ -167,9 +168,7 @@ const processTracks = (tracksCollected, limit) => {
   const allSongs = new Map();
   
   const totalSubCategores = seeds.artists.length + seeds.genres.length + seeds.tracks.length
-  console.log(totalSubCategores)
   const numTracksEach = Math.ceil(limit / totalSubCategores);
-  console.log(numTracksEach)
 
   Object.values(tracksCollected).forEach(category => {
     Object.values(category).forEach(tracks => {
