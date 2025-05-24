@@ -152,7 +152,7 @@
 .playlist-info a {
   display: inline-block;
   margin-top: 10px;
-  color: #1DB954;  /* Spotify green */
+  color: #1d41b9; 
   text-decoration: none;
   font-weight: bold;
 }
@@ -286,7 +286,7 @@ label {
 }
 
 input:checked + .slider {
-  background-color: #4CAF50;
+  background-color: #1d41b9;
 }
 
 input:checked + .slider:before {

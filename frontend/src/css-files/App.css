@@ -29,7 +29,7 @@ h1 {
 }
 
 .header {
-  background-color:#1DB954;
+  background-color:#1d41b9;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -58,15 +58,15 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #747171;
+  background-color: #747471;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 
 button:hover {
   background-color:white;
-  border-color: #646cff;
-  color:#1DB954;
+  border-color: #c94cd4;
+  color:#1d41b9;
 }
 
 button:focus,
