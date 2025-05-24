@@ -64,8 +64,8 @@ button {
 }
 
 button:hover {
-  background-color:white;
-  border-color: #c94cd4;
+  background-color:rgb(235, 231, 8);
+  border-color: #1d41b9;
   color:#1d41b9;
 }
 
