@@ -1,21 +1,15 @@
 import "../css-files/sweet.css";
-import { useState } from 'react';
-import { AVAILABLE_GENRES } from '../data/genres';
-import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import PlaylistBuilderVisual from "../components/PlaylistBuilderVisual.jsx";
+import { updateInput, addSeed, removeSeed, setRecommendations } from "../store.jsx";
 import { showError, showSuccess, showPlaylistCreationDialog} from '../services/alertServices.jsx';
 import { getPlaylistContent, searchForPlaylistItems, createPlaylist, addTracksToPlaylist} from '../helpers/SpotifyAPICalls.jsx';
-import { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit} from '../store.jsx';
 
 const PlaylistBuilder = () => {
-  const navigate = useNavigate();
-
   const inputs = useSelector(state => state.inputs);
   const seeds = useSelector(state => state.seeds);
   const playlist = useSelector(state => state.playlist);
   const dispatch = useDispatch();
-  const [availableGenres] = useState(AVAILABLE_GENRES);
-
 
   const handleArtistChange = (e) => {
     dispatch(updateInput({ field: 'artistName', value: e.target.value }));
@@ -225,132 +219,13 @@ const processTracks = (tracksCollected, limit) => {
     return result;
   }
 
-
   return (
-    <div className="container">
-      <header className="header">
-        <Link to="/" className="header-title">
-          <h1>{import.meta.env.VITE_APP_NAME}</h1>
-        </Link>
-        <button onClick={() => navigate('/')} className="home-button">
-          Home
-        </button>
-      </header>
-
-      <div>
-          <div className='playlist-header'>
-            <h2>Build Your Recommended Playlist</h2>
-        </div>
-        <div className='playlist-params'>
-            <label>Enter Songs:
-            <input
-              type="text"
-              value={inputs.trackName}
-              onChange={handleTrackChange}
-              placeholder="Enter song name"
-            />
-            <button onClick={addTrack}>Add Song</button>
-            <div className="song-list">
-              {seeds.tracks.length > 0 && seeds.tracks.map((track, index) => (
-                <div key={index} className="song-item">
-                  <span>{track}</span>
-                  <button onClick={() => removeTrack(index)}>Remove</button>
-                </div>
-              ))}
-            </div>
-            </label>
-            <label>Enter Genres:
-            <select
-                value={inputs.genre}
-                onChange={handleGenreChange}
-                placeholder="Select genre"
-              >
-                <option value="">Select a genre</option>
-                {availableGenres.map((genre, index) => (
-                  <option key={index} value={genre}>
-                    {genre}
-                  </option>
-                ))}
-              </select>
-              <button onClick={addGenre}>Add Genre</button>
-              <div className="song-list">
-            {seeds.genres.length > 0 && seeds.genres.map((genre, index) => (
-              <div key={index} className="song-item">
-                <span>{genre}</span>
-                <button onClick={() => removeGenre(index)}>Remove</button>
-              </div>
-            ))}
-          </div>
-            </label>
-            <label>Enter Artists:
-            <input
-              type="text"
-              value={inputs.artistName}
-              onChange={handleArtistChange}
-              placeholder="Enter artist name"
-            />
-            <button onClick={addArtist}>Add Artist</button>
-            <div className="song-list">
-              {seeds.artists.length > 0 && seeds.artists.map((artist, index) => (
-                <div key={index} className="song-item">
-                  <span>{artist}</span>
-                  <button onClick={() => removeArtist(index)}>Remove</button>
-                </div>
-              ))}
-            </div>
-            </label>
-          <label>
-            Song Limit:
-            <input
-              type="number"
-              step="1"
-              min="1"
-              max="100"
-              value={playlist.limit}
-              onChange={(e) => dispatch(setPlaylistLimit(e.target.value === '' ? '' : parseFloat(e.target.value)))}
-            />
-          </label>
-        </div>
-        </div>
-
-        <button id="generate-playlist" onClick={getRecommendations}>
-          Generate Playlist
-        </button>
-
-              
-        {playlist.recommendations.length> 0 && (
-          <>
-          <div className="playlist-list">
-            {playlist.recommendations.map((track) => (
-              <div key={track.id} className="playlist-track-card">
-                <div className='track-info'>
-                <img
-                  src={track.album.images[0].url} // Display the first image
-                  alt={track.name}
-                  className="playlist-album-image"
-                />
-              <div className="playlist-info">
-                <h3>{track.name}</h3>
-                <p>{track.artists.map((artist) => artist.name).join(', ')}</p>
-                <p>{track.album.name}</p>
-              </div>
-              <button
-                onClick={() => removeTrackFromPlaylist(track.id)} // Pass track.id here
-                className="remove-track-button"
-                title="Remove this song from playlist"
-              >
-                X
-              </button>
-              </div>
-          </div>
-        ))}
-      </div>
-      <button id="create-playlist" className="create-playlist-button" onClick={handleCreatePlaylist}>
-        Create Playlist
-      </button>
-      </>
-    )}
-  </div>
+    <PlaylistBuilderVisual 
+    addTrack={addTrack}  removeTrack={removeTrack} handleTrackChange={handleTrackChange} 
+    addGenre={addGenre} removeGenre={removeGenre} handleGenreChange={handleGenreChange} 
+    addArtist={addArtist} removeArtist={removeArtist} handleArtistChange={handleArtistChange} 
+    removeTrackFromPlaylist={removeTrackFromPlaylist} handleCreatePlaylist={handleCreatePlaylist} getRecommendations={getRecommendations}>
+    </PlaylistBuilderVisual>
   );
 };
 

@@ -4,6 +4,7 @@ import './css-files/index.css';
 import Modal from 'react-modal';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
+import HomePage from './elements/HomePage';
 import TopTracks from './elements/TopTracks';
 import TopArtists from './elements/TopArtists';
 import AccountInfo from './elements/AccountInfo';
@@ -15,6 +16,7 @@ const Main = () => (
     <Router>
       <Routes>
         <Route path="/" element={<App />} />
+        <Route path="/Home" element={<HomePage />} />
         <Route path="/AccountInfo" element={<AccountInfo />} />
         <Route path="/FavoriteArtists" element={<TopArtists />} />
         <Route path="/FavoriteTracks" element={<TopTracks />} />

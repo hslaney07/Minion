@@ -17,7 +17,7 @@ const scopes = [
   'playlist-modify-private'
 ].join(' ');
 
-app.get('/login', (req, res) => {
+app.get('/login', (_, res) => {
   const redirectUri = 'https://accounts.spotify.com/authorize?' +
     new URLSearchParams({
       response_type: 'code',
@@ -64,7 +64,7 @@ app.get('/callback', async (req, res) => {
     });
 
     // Redirect back to frontend
-    res.redirect(process.env.FRONTEND_URI);
+    res.redirect(`${process.env.FRONTEND_URI}/Home`);
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
