@@ -1,7 +1,7 @@
-import express, { json } from 'express';
-import axios from 'axios';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
+const cookieParser = require('cookie-parser')
 require('dotenv').config();
 
 const app = express();
