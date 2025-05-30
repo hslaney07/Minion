@@ -267,8 +267,7 @@ async function refreshAccessToken(refreshToken) {
   return response.data; // contains access_token and optionally a new refresh_token
 }
 
-
-const PORT = 8888;
+const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running!`);
 });
