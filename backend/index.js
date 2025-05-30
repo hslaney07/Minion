@@ -54,13 +54,13 @@ app.get('/callback', async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: expires_in * 1000,
-      sameSite: 'Lax'
+      sameSite: 'None'
     });
 
     res.cookie('spotifyRefreshToken', refresh_token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'Lax'
+      sameSite: 'None'
     });
 
     // Redirect back to frontend
