@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser')
 require('dotenv').config();
 
 const app = express();
-app.use(cors({ origin: process.env.FRONTEND_URI, credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URI, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(cookieParser());
 app.use(express.json())
 
