@@ -1,13 +1,13 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
+import express, { json } from 'express';
+import { post, get } from 'axios';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 require('dotenv').config();
 
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URI, credentials: true }));
 app.use(cookieParser());
-app.use(express.json())
+app.use(json())
 
 const scopes = [
   'user-read-private',
@@ -33,7 +33,7 @@ app.get('/callback', async (req, res) => {
   const code = req.query.code || null;
 
   try {
-    const tokenRes = await axios.post('https://accounts.spotify.com/api/token',
+    const tokenRes = await post('https://accounts.spotify.com/api/token',
       new URLSearchParams({
         grant_type: 'authorization_code',
         code,
@@ -108,7 +108,7 @@ async function spotifyRequest(req, res, requestFn) {
 
 app.get('/me', async (req, res) => {
   await spotifyRequest(req, res, async (token) => {
-    const response = await axios.get('https://api.spotify.com/v1/me', {
+    const response = await get('https://api.spotify.com/v1/me', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -137,7 +137,7 @@ app.post('/create-playlist', async (req, res) => {
 
   await spotifyRequest(req, res, async (token) => {
     // get user's Spotify ID
-    const userRes = await axios.get('https://api.spotify.com/v1/me', {
+    const userRes = await get('https://api.spotify.com/v1/me', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -145,7 +145,7 @@ app.post('/create-playlist', async (req, res) => {
     const userId = userRes.data.id;
 
     // create playlist
-    const playlistRes = await axios.post(
+    const playlistRes = await post(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
       {
         name,
@@ -168,7 +168,7 @@ app.post('/get-playlist-content', async (req, res) => {
   const playlistId = req.body.playlistId;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+    const response = await get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         headers: {
         Authorization: `Bearer ${token}` 
         }
@@ -181,7 +181,7 @@ app.post('/add-tracks-to-playlist', async (req, res) => {
   const { playlistId, uris } = req.body;
 
   await spotifyRequest(req, res, async (token) => {
-    const addTracksResponse = await axios.post(
+    const addTracksResponse = await post(
       `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
         uris: uris, 
@@ -202,7 +202,7 @@ app.post('/search-for-playlist-items', async (req, res) => {
   const requestType = req.body.requestType;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await axios.get(
+    const response = await get(
       `https://api.spotify.com/v1/search`,
       {
         headers: {
@@ -223,7 +223,7 @@ app.post('/get-top-artists', async (req, res) => {
   const {amount, timeRange} = req.body;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await axios.get(
+    const response = await get(
       `https://api.spotify.com/v1/me/top/artists?limit=${amount}&time_range=${timeRange}`,
       {
         headers: {
@@ -240,7 +240,7 @@ app.post('/get-top-tracks', async (req, res) => {
   const {amount, timeRange} = req.body;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await axios.get(
+    const response = await get(
       `https://api.spotify.com/v1/me/top/tracks?limit=${amount}&time_range=${timeRange}`,
       {
         headers: {
@@ -254,7 +254,7 @@ app.post('/get-top-tracks', async (req, res) => {
 });
 
 async function refreshAccessToken(refreshToken) {
-  const response = await axios.post('https://accounts.spotify.com/api/token',
+  const response = await post('https://accounts.spotify.com/api/token',
     new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token: refreshToken,
