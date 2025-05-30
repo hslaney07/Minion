@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URI, credentials: true }));
 app.use(cookieParser());
-app.use(json())
+app.use(express.json())
 
 const scopes = [
   'user-read-private',
