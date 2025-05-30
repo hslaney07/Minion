@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { post, get } from 'axios';
+import axios from 'axios';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 require('dotenv').config();
@@ -33,7 +33,7 @@ app.get('/callback', async (req, res) => {
   const code = req.query.code || null;
 
   try {
-    const tokenRes = await post('https://accounts.spotify.com/api/token',
+    const tokenRes = await axios.post('https://accounts.spotify.com/api/token',
       new URLSearchParams({
         grant_type: 'authorization_code',
         code,
@@ -105,10 +105,9 @@ async function spotifyRequest(req, res, requestFn) {
   }
 }
 
-
 app.get('/me', async (req, res) => {
   await spotifyRequest(req, res, async (token) => {
-    const response = await get('https://api.spotify.com/v1/me', {
+    const response = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -117,8 +116,7 @@ app.get('/me', async (req, res) => {
   });
 });
 
-
-app.post('/logout', (req, res) => {
+app.post('/logout', (_, res) => {
   res.clearCookie('spotifyAccessToken', {
     httpOnly: true,
     secure: true,
@@ -137,7 +135,7 @@ app.post('/create-playlist', async (req, res) => {
 
   await spotifyRequest(req, res, async (token) => {
     // get user's Spotify ID
-    const userRes = await get('https://api.spotify.com/v1/me', {
+    const userRes = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -145,7 +143,7 @@ app.post('/create-playlist', async (req, res) => {
     const userId = userRes.data.id;
 
     // create playlist
-    const playlistRes = await post(
+    const playlistRes = await axios.post(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
       {
         name,
@@ -168,7 +166,7 @@ app.post('/get-playlist-content', async (req, res) => {
   const playlistId = req.body.playlistId;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+    const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         headers: {
         Authorization: `Bearer ${token}` 
         }
@@ -181,7 +179,7 @@ app.post('/add-tracks-to-playlist', async (req, res) => {
   const { playlistId, uris } = req.body;
 
   await spotifyRequest(req, res, async (token) => {
-    const addTracksResponse = await post(
+    const addTracksResponse = await axios.post(
       `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
         uris: uris, 
@@ -202,7 +200,7 @@ app.post('/search-for-playlist-items', async (req, res) => {
   const requestType = req.body.requestType;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await get(
+    const response = await axios.get(
       `https://api.spotify.com/v1/search`,
       {
         headers: {
@@ -223,7 +221,7 @@ app.post('/get-top-artists', async (req, res) => {
   const {amount, timeRange} = req.body;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await get(
+    const response = await axios.get(
       `https://api.spotify.com/v1/me/top/artists?limit=${amount}&time_range=${timeRange}`,
       {
         headers: {
@@ -240,7 +238,7 @@ app.post('/get-top-tracks', async (req, res) => {
   const {amount, timeRange} = req.body;
 
   await spotifyRequest(req, res, async (token) => {
-    const response = await get(
+    const response = await axios.get(
       `https://api.spotify.com/v1/me/top/tracks?limit=${amount}&time_range=${timeRange}`,
       {
         headers: {
@@ -254,7 +252,7 @@ app.post('/get-top-tracks', async (req, res) => {
 });
 
 async function refreshAccessToken(refreshToken) {
-  const response = await post('https://accounts.spotify.com/api/token',
+  const response = await axios.post('https://accounts.spotify.com/api/token',
     new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token: refreshToken,
@@ -268,7 +266,6 @@ async function refreshAccessToken(refreshToken) {
 
   return response.data; // contains access_token and optionally a new refresh_token
 }
-
 
 
 const PORT = 8888;
