@@ -89,7 +89,7 @@ async function spotifyRequest(req, res, requestFn) {
           httpOnly: true,
           secure: true,
           maxAge: refreshed.expires_in * 1000,
-          sameSite: 'Lax'
+          sameSite: 'None'
         });
 
         // Retry the original request with new token
