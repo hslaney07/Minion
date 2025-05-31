@@ -12,12 +12,12 @@
 }
 
 .user-data p {
-  margin: 6px 0;
+  margin: 0.5rem 0rem;
 }
 
 .user-data img{
-  width: 100px; 
-  height: 100px;
+  width: 6rem; 
+  height: 6rem;
   border-radius: 50%; 
   object-fit: cover; 
   margin-top: 10px;
@@ -32,7 +32,7 @@
   background-color: #747171;
   cursor: pointer;
   transition: border-color 0.25s;
-  padding: 0.5rem 0.5rem;
+  padding: 0.75rem 0.75rem;
   font-size: 0.75rem;
   position: absolute;
   right: 10px; 
@@ -72,15 +72,15 @@
 }
 
 .filters {
-  margin-bottom: 20px; 
+  margin-bottom: 1rem; 
   display: flex;
-  gap: 10px; 
+  gap: 1rem; 
 }
 
 .filter-input {
-  width: 150px; 
-  height: 30px;  
-  padding: 6px;
+  width: 8rem; 
+  height: 2rem;  
+  padding: 0.1rem;
   font-size: 0.75rem;
   box-sizing: border-box;
 }
