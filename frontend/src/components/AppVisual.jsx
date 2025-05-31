@@ -18,7 +18,7 @@ function LoginButton(){
 
 export default function AppVisual() {
   return (
-     <div className="container">
+     <div>
         <Header/>
         <LoginButton/>
       </div>
