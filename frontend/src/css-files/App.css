@@ -47,9 +47,7 @@ h1 {
   margin: 0;
   position: absolute;
   left: 50%;
-  flex: 1;
   transform: translateX(-50%); 
-  word-break: break-word
 }
 
 /* Home Button at the top-left corner */
@@ -150,6 +148,27 @@ button:focus-visible {
   .filters {
     flex-direction: column;
     align-items: center;
+  }
+
+  h1 {
+  font-size: 3em; 
+  }
+
+  .account-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .account-information-button {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.5rem;
+  }
+
+  .account-information-header {
+    right: 0.2rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.2rem;
   }
 
   .filter-input {
