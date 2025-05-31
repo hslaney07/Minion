@@ -123,7 +123,7 @@ function EnterGenres({inputs, seeds, availableGenres, addGenre, removeGenre, han
 
 function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist}){
     return(
-    <>
+    <div className='container'>
     {playlist.recommendations.length> 0 && (
         <>
         <div className="playlist-list">
@@ -156,7 +156,7 @@ function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist})
       </button>
       </>
     )}
-  </>
+  </div>
   );
 }
 

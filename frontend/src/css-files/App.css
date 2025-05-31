@@ -47,7 +47,9 @@ h1 {
   margin: 0;
   position: absolute;
   left: 50%;
+  flex: 1;
   transform: translateX(-50%); 
+  word-break: break-word
 }
 
 /* Home Button at the top-left corner */
@@ -63,6 +65,7 @@ h1 {
 /* Account Information at the top-right corner */
 .account-information-header {
   display: flex;
+  flex-shrink: 0;
   justify-content: flex-end; 
   align-items: center;
   position: absolute; 
@@ -146,7 +149,7 @@ button:focus-visible {
 @media (max-width: 480px) {
   .filters {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
 
   .filter-input {
