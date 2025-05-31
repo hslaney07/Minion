@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 
 const corsOptions = {
-  origin: 'https://stirring-kangaroo-2cf80d.netlify.app',//process.env.FRONTEND_URI, 
+  origin: process.env.FRONTEND_URI, 
   credentials: true,
   methods: ['GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -17,23 +17,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-
-app.use((req, res, next) => {
-  // Check for valid session/token
-  const token = req.cookies.spotifyAccessToken || req.headers.authorization;
-  
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-  
-  // Verify token (example using JWT)
-  try {
-    req.user = verifyToken(token); // Your verification logic
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-});
 
 
 const scopes = [
