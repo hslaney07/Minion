@@ -78,7 +78,7 @@ app.get('/callback', async (req, res) => {
       secure: true,
       sameSite: 'None'
     });
-    res.send('Token set! Check cookies!');
+    
 
     // Redirect back to frontend
     res.redirect(`${process.env.FRONTEND_URI}/Home`);
