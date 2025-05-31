@@ -78,10 +78,25 @@ app.get('/callback', async (req, res) => {
       secure: true,
       sameSite: 'None'
     });
-    
+    res.send('Token set! Check cookies!');
 
     // Redirect back to frontend
-    res.redirect(`${process.env.FRONTEND_URI}/Home`);
+    res.send(`
+    <html>
+      <head>
+        <title>Logging you in...</title>
+        <script>
+          // Delay a bit to ensure cookies are saved
+          setTimeout(() => {
+            window.location.href = '${process.env.FRONTEND_URI}/Home';
+          }, 1000);
+        </script>
+      </head>
+      <body>
+        <p>Logging you in, please wait...</p>
+      </body>
+    </html>
+  `);
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
