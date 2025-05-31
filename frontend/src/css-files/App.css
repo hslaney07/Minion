@@ -13,35 +13,95 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.header {
+  position: relative; 
+  height: 60px; 
+  background-color:#1d41b9; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 0 20px; 
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  flex-wrap: wrap;
+}
+
+.header-title:hover {
+  color:pink;
 }
 
 .header-title {
   text-decoration: none;
-  color: inherit; /* Keeps the header’s original color */
+  color: inherit; 
   cursor: pointer;
+  position: inherit; 
+  height: inherit; 
+  display: inherit; 
+  align-items: inherit; 
+  justify-content: inherit; 
+  padding: inherit; 
+  flex-wrap: inherit;
 }
 
-.header-title:hover {
-    color:pink;
+h1 {
+  font-size: 3.2em;
+  line-height: 1.0;
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); 
 }
 
-.header {
-  background-color:#1d41b9;
-  width: 100%;
+/* Home Button at the top-left corner */
+.home-button {
+  position: absolute;
+  left: 10px; 
   display: flex;
-  justify-content: center;
-  align-items: center;
+  align-items: center; 
+  padding: 0.5rem 0.5rem;
+  font-size: 0.75rem;
 }
 
+/* Account Information at the top-right corner */
+.account-information-header {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;
+  position: absolute; 
+  right: 10px; 
+  display: flex; 
+  align-items: center; 
+  gap: 10px;
+}
+
+.account-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover
+}
+
+.account-information-button {
+  padding: 0.5rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+
+/* General css used throughout app */
+.generic-button-home-page{
+  margin-top: 1em
+}
+
+label {
+  font-weight: 600;
+}
 
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -83,51 +143,4 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-
-/* Auth button positioned at the top-right corner */
-.home-button {
-  position: absolute; /* Positions this container independently */
-  left: 20px; /* Adjusts how far from the right edge the content is */
-  display: flex;
-  align-items: center; /* Centers image and button vertically */
-  padding: 0.8rem 1rem; /* Adjust button size as needed */
-  font-size: 1rem; /* Adjust font size relative to the viewport */
-}
-
-.header-right {
-  position: absolute; /* Positions this container independently */
-  right: 20px; /* Adjusts how far from the right edge the content is */
-  display: flex;
-  align-items: center; /* Centers image and button vertically */
-}
-
-.account-icon {
-  width: 40px; /* Set a fixed size for the profile image */
-  height: 40px; /* Ensure the profile image is square */
-  border-radius: 50%; /* Makes the image circular */
-  margin-right: 10px;
-  display: flex;
-  align-items: center;
-}
-
-/* Auth button positioned at the top-right corner */
-.top-right-button {  
-  padding: 0.8rem 1rem; /* Adjust button size as needed */
-  font-size: 1rem; /* Adjust font size relative to the viewport */
-}
-
-.artist-page{
-  margin: 2em;
-}
-
-.header-title {
-  text-decoration: none;
-  color: inherit; /* Keeps the header’s original color */
-  cursor: pointer;
-}
-
-.header-title:hover {
-    color:pink;
 }

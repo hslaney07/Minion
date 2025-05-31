@@ -2,7 +2,7 @@ import { Header } from './GeneralComponents';
 
 function TopArtistsHeading({ timeRange, setTimeRange, amount, setAmount }) {
   return (
-    <>
+    <div className='container'>
       <header>
         <h2>Your Top Artists</h2>
       </header>
@@ -12,6 +12,7 @@ function TopArtistsHeading({ timeRange, setTimeRange, amount, setAmount }) {
           id="time-range"
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
+          className="filter-input"
         >
           <option value="short_term">Short Term</option>
           <option value="medium_term">Medium Term</option>
@@ -26,21 +27,22 @@ function TopArtistsHeading({ timeRange, setTimeRange, amount, setAmount }) {
           max="50"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          className="filter-input"
         />
       </div>
-    </>
+    </div>
   );
 }
 
 function ArtistsList({ favoriteArtists }) {
   return (
-    <div className="artists-list">
+    <div className="results-list">
       {favoriteArtists.map((artist) => (
-        <div key={artist.id} className="artist-card">
+        <div key={artist.id} className="result-card">
           <img
             src={artist.images[0]?.url}
             alt={artist.name}
-            className="artist-image"
+            className="result-image"
           />
           <h3>{artist.name}</h3>
           <p>Followers: {artist.followers.total.toLocaleString()}</p>
@@ -66,7 +68,7 @@ export default function TopArtistsVisual({
   favoriteArtists,
 }) {
   return (
-    <div className="container">
+    <div>
       <Header />
       <TopArtistsHeading
         timeRange={timeRange}

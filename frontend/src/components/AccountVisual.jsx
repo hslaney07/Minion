@@ -10,11 +10,9 @@ function Header({ onLogout }) {
       <button onClick={() => navigate('/Home')} className="home-button">
         Home
       </button>
-      <div className="header-right">
-        <button onClick={onLogout} className="logout-button">
-          Logout
-        </button>
-      </div>
+      <button onClick={onLogout} className="logout-button">
+        Logout
+      </button>
     </header>
   );
 }
@@ -37,7 +35,7 @@ function UserInfo({ userData }) {
         </a>
       </p>
       {images?.[0] && (
-        <img src={images[0].url} alt="User Profile" className="profile-image" />
+        <img src={images[0].url} alt="User Profile" />
       )}
     </div>
   );
@@ -45,9 +43,9 @@ function UserInfo({ userData }) {
 
 export default function AccountVisual({ userData, handleLogout }) {
   return (
-    <div className="container">
+    <>
       <Header onLogout={handleLogout} />
       <UserInfo userData={userData} />
-    </div>
+    </>
   );
 }

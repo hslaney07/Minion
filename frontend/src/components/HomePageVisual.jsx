@@ -6,7 +6,7 @@ function Header({ userData,  }) {
   return (
     <header className="header">
       <h1>{import.meta.env.VITE_APP_NAME}</h1>
-      <div className="header-right">
+      <div className="account-information-header">
         {userData.images?.[0] && (
           <img
             src={userData.images[0].url}
@@ -14,7 +14,7 @@ function Header({ userData,  }) {
             className="account-icon"
           />
         )}
-        <button onClick={() => navigate('/AccountInfo')} className="top-right-button">
+        <button onClick={() => navigate('/AccountInfo')} className="account-information-button">
           Account Info
         </button>
       </div>
@@ -26,16 +26,16 @@ function PageOptions({}){
   const navigate = useNavigate();
   return(
     <div className="container">
-      <button className="artist-page" onClick={() => navigate('/FavoriteArtists')}>
+      <button className="generic-button-home-page" onClick={() => navigate('/FavoriteArtists')}>
         Top Artists Page
       </button>
-      <button className="track-page" onClick={() => navigate('/FavoriteTracks')}>
+      <button className="generic-button-home-page" onClick={() => navigate('/FavoriteTracks')}>
         Top Tracks Page
       </button>
-      <button className="artist-page" onClick={() => navigate('/PlaylistBuilder')}>
+      <button className="generic-button-home-page" onClick={() => navigate('/PlaylistBuilder')}>
         Playlist Builder
       </button>
-      <button className="track-page" onClick={() => navigate('/MusicPlaybackControl')}>
+      <button className="generic-button-home-page" onClick={() => navigate('/MusicPlaybackControl')}>
         Music Control
       </button>
     </div>);

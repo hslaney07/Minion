@@ -9,7 +9,7 @@ function Header() {
 function LoginButton(){
     return(
         <div className="container">
-            <button className="artist-page" onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`}>
+            <button className="generic-button-home-page" onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`}>
             Login with Spotify
             </button>
         </div>

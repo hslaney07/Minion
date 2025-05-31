@@ -2,7 +2,7 @@ import { Header } from './GeneralComponents';
 
 function TopTracksHeading({ timeRange, setTimeRange, amount, setAmount }) {
   return (
-    <>
+    <div className='container'>
       <header>
         <h2>Your Top Tracks</h2>
       </header>
@@ -12,6 +12,7 @@ function TopTracksHeading({ timeRange, setTimeRange, amount, setAmount }) {
           id="time-range"
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
+          className="filter-input"
         >
           <option value="short_term">Short Term</option>
           <option value="medium_term">Medium Term</option>
@@ -26,21 +27,22 @@ function TopTracksHeading({ timeRange, setTimeRange, amount, setAmount }) {
           max="50"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          className="filter-input"
         />
       </div>
-    </>
+    </div>
   );
 }
 
 function TracksList({ topTracks }) {
   return (
-    <div className="artists-list">
+    <div className="results-list">
       {topTracks.map((track) => (
-        <div key={track.id} className="artist-card">
+        <div key={track.id} className="result-card">
           <img
             src={track.album.images[0]?.url}
             alt={track.name}
-            className="artist-image"
+            className="result-image"
           />
           <h3>{track.name}</h3>
           <p>Artist: {track.artists.map((artist) => artist.name).join(', ')}</p>
@@ -63,7 +65,7 @@ export default function TopTracksVisual({
   topTracks,
 }) {
   return (
-    <div className="container">
+    <div >
       <Header />
       <TopTracksHeading
         timeRange={timeRange}

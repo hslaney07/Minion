@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 function PlaylistHeader({inputs, seeds, playlist, dispatch, availableGenres, addTrack, removeTrack, handleTrackChange, addGenre, removeGenre, handleGenreChange, addArtist, removeArtist, handleArtistChange, getRecommendations}){
   return(
-    <>
+    <div className='container'>
       <div>
         <div className='playlist-header'>
           <h2>Build Your Recommended Playlist</h2>
@@ -21,7 +21,7 @@ function PlaylistHeader({inputs, seeds, playlist, dispatch, availableGenres, add
       <button id="generate-playlist" onClick={getRecommendations}>
         Generate Playlist
       </button>
-    </>
+    </div>
   )
 }
 
@@ -160,7 +160,6 @@ function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist})
   );
 }
 
-
 export default function PlaylistBuilderVisual({
     addTrack, removeTrack, handleTrackChange,
     addGenre, removeGenre, handleGenreChange,
@@ -176,7 +175,7 @@ export default function PlaylistBuilderVisual({
   const [availableGenres] = useState(AVAILABLE_GENRES);
   
   return (
-    <div className="container">
+    <>
       <Header />
       <PlaylistHeader 
       inputs={inputs} seeds={seeds} playlist={playlist} dispatch={dispatch} availableGenres={availableGenres}
@@ -187,6 +186,6 @@ export default function PlaylistBuilderVisual({
       <TrackResults 
       playlist={playlist}
       handleCreatePlaylist={handleCreatePlaylist} removeTrackFromPlaylist={removeTrackFromPlaylist}></TrackResults>
-    </div>
+    </>
   );
 }
