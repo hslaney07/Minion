@@ -9,9 +9,6 @@ const app = express();
 const corsOptions = {
   origin: process.env.FRONTEND_URI, 
   credentials: true,
-  methods: ['GET', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['set-cookie']
 };
 
 app.use(cors(corsOptions));
@@ -64,17 +61,13 @@ app.get('/callback', async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: expires_in * 1000,
-      sameSite: 'None',
-      path: '/',
-  partitioned: true,
+      sameSite: 'None'
     });
 
     res.cookie('spotifyRefreshToken', refresh_token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'None',
-      path: '/',
-      partitioned: true,
+      sameSite: 'None'
     });
 
 
@@ -119,9 +112,7 @@ async function spotifyRequest(req, res, requestFn) {
           httpOnly: true,
           secure: true,
           maxAge: refreshed.expires_in * 1000,
-          sameSite: 'None',
-          path: '/',
-          partitioned: true,
+          sameSite: 'None'
         });
 
         // Retry the original request with new token
@@ -137,8 +128,6 @@ async function spotifyRequest(req, res, requestFn) {
   }
 }
 
-app.options('/me', cors(corsOptions));
-
 app.get('/me', cors(corsOptions), async (req, res) => {
   try {
     await spotifyRequest(req, res, async (token) => {
@@ -148,8 +137,6 @@ app.get('/me', cors(corsOptions), async (req, res) => {
         }
       });
       
-      // Add security headers to the response
-      res.set('X-Content-Type-Options', 'nosniff');
       res.json(response.data);
     });
   } catch (error) {
