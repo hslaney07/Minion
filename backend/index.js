@@ -5,25 +5,36 @@ const cookieParser = require('cookie-parser')
 require('dotenv').config();
 
 const app = express();
-app.use(cors({ 
-  origin: process.env.FRONTEND_URI, 
-  credentials: true, 
+
+const corsOptions = {
+  origin: 'https://stirring-kangaroo-2cf80d.netlify.app',//process.env.FRONTEND_URI, 
+  credentials: true,
+  methods: ['GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['set-cookie', 'authorization'] }));
+  exposedHeaders: ['set-cookie']
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.json())
+app.use(express.json());
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Check for valid session/token
+  const token = req.cookies.spotifyAccessToken || req.headers.authorization;
   
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
-  next();
+  
+  // Verify token (example using JWT)
+  try {
+    req.user = verifyToken(token); // Your verification logic
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
 });
+
 
 const scopes = [
   'user-read-private',
@@ -146,15 +157,30 @@ async function spotifyRequest(req, res, requestFn) {
   }
 }
 
-app.get('/me', async (req, res) => {
-  await spotifyRequest(req, res, async (token) => {
-    const response = await axios.get('https://api.spotify.com/v1/me', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+app.options('/me', cors(corsOptions));
+
+app.get('/me', cors(corsOptions), async (req, res) => {
+  try {
+    await spotifyRequest(req, res, async (token) => {
+      const response = await axios.get('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Add security headers to the response
+      res.set('X-Content-Type-Options', 'nosniff');
+      res.json(response.data);
     });
-    res.json(response.data)
-  });
+  } catch (error) {
+    console.error('Spotify API error:', error);
+    
+    // Handle different error cases
+    if (error.response?.status === 401) {
+      return res.status(401).json({ error: 'Spotify token expired' });
+    }
+    res.status(500).json({ error: 'Failed to fetch user data' });
+  }
 });
 
 app.post('/logout', (_, res) => {
