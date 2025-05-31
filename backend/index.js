@@ -9,7 +9,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URI, 
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] }));
+  exposedHeaders: ['set-cookie'] }));
 app.use(cookieParser());
 app.use(express.json())
 

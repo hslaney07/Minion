@@ -12,7 +12,12 @@ const HomePage = () => {
     const fetchUserData = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/me`, {
-          credentials: 'include'
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors' 
         });
 
         if (res.ok) {
