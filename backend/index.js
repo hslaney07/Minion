@@ -5,9 +5,25 @@ const cookieParser = require('cookie-parser')
 require('dotenv').config();
 
 const app = express();
-app.use(cors({ origin: process.env.FRONTEND_URI, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
+app.use(cors({ 
+  origin: process.env.FRONTEND_URI, 
+  credentials: true, 
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] }));
 app.use(cookieParser());
 app.use(express.json())
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 const scopes = [
   'user-read-private',
