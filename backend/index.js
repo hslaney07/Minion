@@ -66,7 +66,6 @@ app.get('/callback', async (req, res) => {
       maxAge: expires_in * 1000,
       sameSite: 'None',
       path: '/',
-  domain: '.onrender.com', // Or your custom domain
   partitioned: true,
     });
 
@@ -75,8 +74,7 @@ app.get('/callback', async (req, res) => {
       secure: true,
       sameSite: 'None',
       path: '/',
-  domain: '.onrender.com', // Or your custom domain
-  partitioned: true,
+      partitioned: true,
     });
 
 
@@ -123,8 +121,7 @@ async function spotifyRequest(req, res, requestFn) {
           maxAge: refreshed.expires_in * 1000,
           sameSite: 'None',
           path: '/',
-  domain: '.onrender.com', // Or your custom domain
-  partitioned: true,
+          partitioned: true,
         });
 
         // Retry the original request with new token
@@ -170,12 +167,12 @@ app.post('/logout', (_, res) => {
   res.clearCookie('spotifyAccessToken', {
     httpOnly: true,
     secure: true,
-    sameSite: 'Lax'
+    sameSite: 'None'
   });
   res.clearCookie('spotifyRefreshToken', {
     httpOnly: true,
     secure: true,
-    sameSite: 'Lax'
+    sameSite: 'None'
   });
   res.sendStatus(200);
 });
