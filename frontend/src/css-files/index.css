@@ -72,9 +72,12 @@
 }
 
 .filters {
+  padding-left: 1%; 
   margin-bottom: 1rem; 
   display: flex;
   gap: 1rem; 
+  box-sizing: border-box;
+  flex-wrap: wrap; 
 }
 
 .filter-input {
