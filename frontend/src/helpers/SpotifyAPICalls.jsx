@@ -1,28 +1,58 @@
 import { showError } from "../services/alertServices";
 
-export const getPlaylistContent = async(playlistId) => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-playlist-content`, {
-      method: 'POST',
-      credentials: 'include',
-       headers: {
-        'Content-Type': 'application/json',
-      },
-       body: JSON.stringify({ playlistId }),
-    });
+export const getUserData = async() => {
+  const response = await  fetch(`${import.meta.env.VITE_BACKEND_URL}/me`, {
+    credentials: 'include' 
+  });
 
-    if (!response.ok) {
-      showError(`Failed to fetch playlist ${playlistId}: ${response.status}`)
-      return null;
-    }
+  if (!response.ok) {
+    showError(`Failed to fetch user data: ${response.status}`)
+    return null;
+  }
 
-    const data = await response.json();
-    const tracks = data.items
-        .filter(item => item && item.track) 
-        .map(item => item.track);
-
-    return tracks;
+  const data = await response.json();
+  return data;
 }
 
+export const logoutUser = async () => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      window.location.href = import.meta.env.VITE_HOMEPAGE_URL;
+    } else {
+      showError(`Logout failed`);
+    }
+  } catch (err) {
+    showError(`Logout Error`, `<a href="#">${err}</a>`)
+  }
+}
+
+export const getPlaylistContent = async(playlistId) => {
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-playlist-content`, {
+    method: 'POST',
+    credentials: 'include',
+      headers: {
+      'Content-Type': 'application/json',
+    },
+      body: JSON.stringify({ playlistId }),
+  });
+
+  if (!response.ok) {
+    showError(`Failed to fetch playlist ${playlistId}: ${response.status}`)
+    return null;
+  }
+
+  const data = await response.json();
+  const tracks = data.items
+      .filter(item => item && item.track) 
+      .map(item => item.track);
+
+  return tracks;
+}
 
 export const createPlaylist = async(playlistName, description, isPublic) => {
   try{

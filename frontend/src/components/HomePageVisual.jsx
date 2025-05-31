@@ -1,7 +1,9 @@
 import '../css-files/App.css';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-function Header({ userData,  }) {
+function Header({ }) {
+  const userData = useSelector(state => state.user);
   const navigate = useNavigate();
   return (
     <header className="header">
@@ -41,10 +43,10 @@ function PageOptions({}){
     </div>);
 }
 
-export default function HomePageVisual({userData}) {
+export default function HomePageVisual() {
   return (
       <>
-        <Header userData={userData}/>
+        <Header />
         <PageOptions />
       </>
   )

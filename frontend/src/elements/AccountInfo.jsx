@@ -1,47 +1,27 @@
-import { useEffect, useState } from 'react';  
-import { showError } from '../services/alertServices';
+import { useEffect } from 'react'; 
+import { setUserData } from '../stores/userSlice';
+import {getUserData} from '../helpers/SpotifyAPICalls'; 
 import AccountVisual from '../components/AccountVisual';
+import { useSelector, useDispatch } from 'react-redux';
 
 const AccountInfo = () => {
-  const [userData, setUserData] = useState(null);
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.user);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/me`, {
-          credentials: 'include' 
-        })
-          .then(res => res.json())
-          .then(data => setUserData(data));
-         
-      } catch (error) {
-        showError(`Error fetching data`, `<a href="#">${error}</a>`)
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-
-  const handleLogout = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (res.ok) {
-        window.location.href = import.meta.env.VITE_HOMEPAGE_URL;
-      } else {
-        showError(`Logout failed`);
-      }
-    } catch (err) {
-      showError(`Logout Error`, `<a href="#">${err}</a>`)
+    if (!userData.display_name) {
+      const fetchAndStoreUser = async () => {
+        const userDataFromSpotify = await getUserData();
+        if (userDataFromSpotify) {
+          dispatch(setUserData(userDataFromSpotify));
+        }
+      };
+      fetchAndStoreUser();
     }
-  };
+  }, [dispatch, userData]);
 
   return (
-   <AccountVisual userData={userData} handleLogout={handleLogout} />
+   <AccountVisual />
   );
 };
 

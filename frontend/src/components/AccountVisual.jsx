@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { logoutUser } from '../helpers/SpotifyAPICalls';
 
-function Header({ onLogout }) {
+function Header({}) {
   const navigate = useNavigate();
   return (
     <header className="header">
@@ -10,14 +12,16 @@ function Header({ onLogout }) {
       <button onClick={() => navigate('/Home')} className="home-button">
         Home
       </button>
-      <button onClick={onLogout} className="logout-button">
+      <button onClick={logoutUser} className="logout-button">
         Logout
       </button>
     </header>
   );
 }
 
-function UserInfo({ userData }) {
+function UserInfo({ }) {
+  const userData = useSelector(state => state.user);
+
   if (!userData) return <p>User Data Not Available</p>;
 
   const { display_name, email, country, followers, external_urls, images } = userData;
@@ -41,11 +45,11 @@ function UserInfo({ userData }) {
   );
 }
 
-export default function AccountVisual({ userData, handleLogout }) {
+export default function AccountVisual({ }) {
   return (
     <>
-      <Header onLogout={handleLogout} />
-      <UserInfo userData={userData} />
+      <Header />
+      <UserInfo />
     </>
   );
 }

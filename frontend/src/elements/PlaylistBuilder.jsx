@@ -1,14 +1,15 @@
 import "../css-files/sweet.css";
 import { useSelector, useDispatch } from 'react-redux';
 import PlaylistBuilderVisual from "../components/PlaylistBuilderVisual.jsx";
-import { updateInput, addSeed, removeSeed, setRecommendations } from "../store.jsx";
+import { updateInput, addSeed, removeSeed, setRecommendations } from "../stores/playlistSlice.jsx";
 import { showError, showSuccess, showPlaylistCreationDialog} from '../services/alertServices.jsx';
 import { getPlaylistContent, searchForPlaylistItems, createPlaylist, addTracksToPlaylist} from '../helpers/SpotifyAPICalls.jsx';
 
 const PlaylistBuilder = () => {
-  const inputs = useSelector(state => state.inputs);
-  const seeds = useSelector(state => state.seeds);
-  const playlist = useSelector(state => state.playlist);
+  const inputs = useSelector(state => state.playlist.inputs);
+  const seeds = useSelector(state => state.playlist.seeds);
+  const playlist = useSelector(state => state.playlist.playlist);
+  
   const dispatch = useDispatch();
 
   const handleArtistChange = (e) => {

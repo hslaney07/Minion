@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Header } from './GeneralComponents';
-import { setPlaylistLimit} from '../store.jsx';
+import { setPlaylistLimit} from '../stores/playlistSlice.jsx';
 import { AVAILABLE_GENRES } from '../data/genres';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -168,9 +168,9 @@ export default function PlaylistBuilderVisual({
     handleCreatePlaylist,
     getRecommendations
 }) {
-  const inputs = useSelector(state => state.inputs);
-  const seeds = useSelector(state => state.seeds);
-  const playlist = useSelector(state => state.playlist);
+  const inputs = useSelector(state => state.playlist.inputs);
+  const seeds = useSelector(state => state.playlist.seeds);
+  const playlist = useSelector(state => state.playlist.playlist);
   const dispatch = useDispatch();
   const [availableGenres] = useState(AVAILABLE_GENRES);
   
