@@ -9,7 +9,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URI, 
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['set-cookie'] }));
+  exposedHeaders: ['set-cookie', 'authorization'] }));
 app.use(cookieParser());
 app.use(express.json())
 
@@ -70,13 +70,19 @@ app.get('/callback', async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: expires_in * 1000,
-      sameSite: 'None'
+      sameSite: 'None',
+      path: '/',
+      domain: '.onrender.com', // Or your custom domain
+      partitioned: true, 
     });
 
     res.cookie('spotifyRefreshToken', refresh_token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'None'
+        path: '/',
+      domain: '.onrender.com', // Or your custom domain
+      partitioned: true, 
+          sameSite: 'None'
     });
 
 
@@ -121,7 +127,10 @@ async function spotifyRequest(req, res, requestFn) {
           httpOnly: true,
           secure: true,
           maxAge: refreshed.expires_in * 1000,
-          sameSite: 'None'
+          sameSite: 'None',
+          path: '/',
+          domain: '.onrender.com', // Or your custom domain
+          partitioned: true, 
         });
 
         // Retry the original request with new token
