@@ -81,19 +81,13 @@ app.get('/callback', async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: expires_in * 1000,
-      sameSite: 'None',
-      path: '/',
-      domain: '.onrender.com', // Or your custom domain
-      partitioned: true, 
+      sameSite: 'None'
     });
 
     res.cookie('spotifyRefreshToken', refresh_token, {
       httpOnly: true,
       secure: true,
-        path: '/',
-      domain: '.onrender.com', // Or your custom domain
-      partitioned: true, 
-          sameSite: 'None'
+      sameSite: 'None'
     });
 
 
@@ -138,10 +132,7 @@ async function spotifyRequest(req, res, requestFn) {
           httpOnly: true,
           secure: true,
           maxAge: refreshed.expires_in * 1000,
-          sameSite: 'None',
-          path: '/',
-          domain: '.onrender.com', // Or your custom domain
-          partitioned: true, 
+          sameSite: 'None'
         });
 
         // Retry the original request with new token
