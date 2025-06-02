@@ -14,3 +14,32 @@ export function Header() {
   );
 }
 
+export function NoDataAvailable({message}){
+  return (
+  <div className="no-data-available">
+    <p>{message}</p>
+    <p>
+      Recommend trying to relogin:&nbsp;
+      <a href={import.meta.env.VITE_HOMEPAGE_URL}>{import.meta.env.VITE_HOMEPAGE_URL}</a>
+    </p>
+  </div>
+  );
+}
+
+export function LoadingSpinner(){
+  return(<div className="no-data-available">
+        <p>Loading Content...</p>
+        <div className="spinner" />
+      </div>);
+}
+
+
+export function LoadingVisual(){
+  return (
+    <>
+      <Header />
+      <LoadingSpinner />
+    </>
+  );
+}
+

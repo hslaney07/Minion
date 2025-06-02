@@ -73,21 +73,69 @@ app.get('/callback', async (req, res) => {
 
     // Redirect back to frontend
     res.send(`
-    <html>
-      <head>
-        <title>Logging you in...</title>
-        <script>
-          // Delay a bit to ensure cookies are saved
-          setTimeout(() => {
-            window.location.href = '${process.env.FRONTEND_URI}/Home';
-          }, 1000);
-        </script>
-      </head>
-      <body>
-        <p>Logging you in, please wait...</p>
-      </body>
-    </html>
-  `);
+  <html>
+    <head>
+      <title>Logging you in...</title>
+      <style>
+        body {
+          margin: 0;
+          font-family: Arial, sans-serif;
+          text-align: center;
+          background-color: #242424;
+        }
+        header {
+          position: relative;
+          height: 3.5rem;
+          background-color: #1d41b9;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          font-family: Arial, sans-serif;
+        }
+        .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 80vh;
+          font-weight: 600;
+          color:rgb(255, 255, 255);
+        }
+        .spinner {
+          width: 40px;
+          height: 40px;
+          border: 4px solid #eee;
+          border-top: 4px solid #333;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin-top: 1rem;
+        }
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      </style>
+      <script>
+        setTimeout(() => {
+          window.location.href = '${process.env.FRONTEND_URI}/Home';
+        }, 1000);
+      </script>
+    </head>
+    <body>
+      <header>
+        <h1>Minion</h1>
+      </header>
+      <div class="container">
+        <p>Logging you in...</p>
+        <div class="spinner"></div>
+      </div>
+    </body>
+  </html>
+`);
+
   } catch (error) {
     console.error(error);
     res.sendStatus(500);

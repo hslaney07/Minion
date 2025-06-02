@@ -1,7 +1,7 @@
 import "../css-files/sweet.css";
 import { useSelector, useDispatch } from 'react-redux';
 import PlaylistBuilderVisual from "../components/PlaylistBuilderVisual.jsx";
-import { updateInput, addSeed, removeSeed, setRecommendations } from "../stores/playlistSlice.jsx";
+import { updateInput, addSeed, removeSeed, setRecommendations, recommendationsRequested } from "../stores/playlistSlice.jsx";
 import { showError, showSuccess, showPlaylistCreationDialog} from '../services/alertServices.jsx';
 import { getPlaylistContent, searchForPlaylistItems, createPlaylist, addTracksToPlaylist} from '../helpers/SpotifyAPICalls.jsx';
 
@@ -95,6 +95,8 @@ const PlaylistBuilder = () => {
         showError('Need to provide at least one seed (artist, genre, or track)');
         return;
       }
+
+      dispatch(recommendationsRequested(true))
 
       const tracksCollected = await collectTracksFromSeeds(seeds);
       const recommendations = processTracks(tracksCollected, playlist.limit);

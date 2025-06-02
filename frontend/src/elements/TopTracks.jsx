@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { showError } from '../services/alertServices';
 import TopTracksVisual from '../components/TopTracksVisual';
+import { LoadingVisual } from '../components/GeneralComponents';
 
 const TopTracks = () => {
   const [topTracks, setTopTracks] = useState([]);
@@ -36,15 +37,19 @@ const TopTracks = () => {
     fetchTopTracks();
   }, [timeRange, amount]); 
 
-  return (
-    <TopTracksVisual
-      timeRange={timeRange}
-      setTimeRange={setTimeRange}
-      amount={amount}
-      setAmount={setAmount}
-      topTracks={topTracks}
-    />
-  );
+  if(topTracks.length == 0){
+    return <LoadingVisual />
+  }else{
+    return (
+      <TopTracksVisual
+        timeRange={timeRange}
+        setTimeRange={setTimeRange}
+        amount={amount}
+        setAmount={setAmount}
+        topTracks={topTracks}
+      />
+    );
+  }
 };
 
 export default TopTracks;

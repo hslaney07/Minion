@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Header } from './GeneralComponents';
+import { Header, LoadingSpinner } from './GeneralComponents';
 import { setPlaylistLimit} from '../stores/playlistSlice.jsx';
 import { AVAILABLE_GENRES } from '../data/genres';
 import { useSelector, useDispatch } from 'react-redux';
@@ -47,7 +47,6 @@ function EnterSongs({inputs, seeds, addTrack, removeTrack, handleTrackChange}){
       </label>
     </>
   )
-
 }
 
 function EnterSongLimit({playlist, dispatch}){
@@ -122,42 +121,45 @@ function EnterGenres({inputs, seeds, availableGenres, addGenre, removeGenre, han
 }
 
 function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist}){
+  if (playlist.recommendationsRequested && playlist.recommendations.length == 0){
+    return (<LoadingSpinner />)
+  }else{
     return(
     <div className='container'>
     {playlist.recommendations.length> 0 && (
-        <>
-        <div className="playlist-list">
-          {playlist.recommendations.map((track) => (
-            <div key={track.id} className="playlist-track-card">
-              <div className='track-info'>
-                <img
-                  src={track.album.images[0].url}
-                  alt={track.name}
-                  className="playlist-album-image"
-                />
-                <div className="playlist-info">
-                  <h3>{track.name}</h3>
-                  <p>{track.artists.map((artist) => artist.name).join(', ')}</p>
-                  <p>{track.album.name}</p>
-                </div>
-                <button
-                  onClick={() => removeTrackFromPlaylist(track.id)} 
-                  className="remove-track-button"
-                  title="Remove this song from playlist"
-                >
-                  X
-                </button>
+      <>
+      <div className="playlist-list">
+        {playlist.recommendations.map((track) => (
+          <div key={track.id} className="playlist-track-card">
+            <div className='track-info'>
+              <img
+                src={track.album.images[0].url}
+                alt={track.name}
+                className="playlist-album-image"
+              />
+              <div className="playlist-info">
+                <h3>{track.name}</h3>
+                <p>{track.artists.map((artist) => artist.name).join(', ')}</p>
+                <p>{track.album.name}</p>
               </div>
+              <button
+                onClick={() => removeTrackFromPlaylist(track.id)} 
+                className="remove-track-button"
+                title="Remove this song from playlist"
+              >
+                X
+              </button>
+            </div>
           </div>
          ))}
-        </div>
+      </div>
       <button id="create-playlist" className="create-playlist-button" onClick={handleCreatePlaylist}>
         Create Playlist
       </button>
       </>
     )}
-  </div>
-  );
+    </div>);
+  }
 }
 
 export default function PlaylistBuilderVisual({

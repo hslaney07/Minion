@@ -4,6 +4,7 @@ import { setUserData } from '../stores/userSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import HomePageVisual from '../components/HomePageVisual';
 import { getUserData } from '../helpers/SpotifyAPICalls';
+import { LoadingVisual } from '../components/GeneralComponents';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const HomePage = () => {
   }, [dispatch, userData]);
 
   if (!isUserDataLoaded) {
-    return <div className="container">Loading...</div>;
+    return <LoadingVisual />;
   }else{
     return (
       <HomePageVisual />

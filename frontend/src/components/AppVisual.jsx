@@ -7,13 +7,13 @@ function Header() {
 }
 
 function LoginButton(){
-    return(
-        <div className="container">
-            <button className="generic-button-home-page" onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`}>
-            Login with Spotify
-            </button>
-        </div>
-    )
+  return(
+    <div className="container">
+      <button className="generic-button-home-page" onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`}>
+      Login with Spotify
+      </button>
+    </div>
+  )
 }
 
 export default function AppVisual() {

@@ -1,6 +1,7 @@
 import{ useEffect, useState } from 'react';
 import { showError } from '../services/alertServices';
 import TopArtistsVisual from '../components/TopArtistsVisual';
+import { LoadingVisual } from '../components/GeneralComponents';
 
 const TopArtists = () => {
   const [favoriteArtists, setFavoriteArtists] = useState([]);
@@ -36,15 +37,20 @@ const TopArtists = () => {
     fetchFavoriteArtists();
   }, [timeRange, amount]);
 
-  return (
-    <TopArtistsVisual
-      timeRange={timeRange}
-      setTimeRange={setTimeRange}
-      amount={amount}
-      setAmount={setAmount}
-      favoriteArtists={favoriteArtists}
-    />
-  );
+
+  if(favoriteArtists.length == 0){
+    return <LoadingVisual />
+  }else{
+    return (
+      <TopArtistsVisual
+        timeRange={timeRange}
+        setTimeRange={setTimeRange}
+        amount={amount}
+        setAmount={setAmount}
+        favoriteArtists={favoriteArtists}
+      />
+    );
+  }
 };
 
 export default TopArtists;
