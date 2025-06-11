@@ -14,7 +14,6 @@ const AccountInfo = () => {
   }
 
   useEffect(() => {
-    console.log(userData)
     if (!userData.display_name) {
       const fetchAndStoreUser = async () => {
         const userDataFromSpotify = await getUserData();

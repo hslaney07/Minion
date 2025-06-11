@@ -122,10 +122,6 @@
   width: 100%;
 }
 
-.playlist-track-card:hover {
-  transform: translateY(-5px);
-}
-
 .playlist-album-image {
   width: 100px; 
   height: 100px;
@@ -233,6 +229,76 @@
 .create-playlist-button{
   margin: 2rem;
 }
+
+.clear-recommendations {
+  right: 1rem;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.5rem;
+  float: right; /* Option 1 */
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 1rem;
+}
+
+.clear-recommendations:hover {
+  background-color:red;
+  border-color: #646cff;
+}
+
+
+.section-bar {
+  width: 100%;
+  height: 6px;
+  background-color: rgb(138, 74, 163); /* Spotify green */
+  margin: 0 auto 1rem;
+  border-radius: 3px;
+}
+
+.inspiring-playlists-section {
+  padding: 2rem;
+  background-color: #e2e4e9;
+  color: #1d41b9;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.insp-playlist-list {
+  padding-top: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;      /* keeps it readable on huge screens */
+  margin: 0 auto;         /* centers the grid */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
+}
+
+
+.insp-playlist-track-card {
+  overflow: hidden;
+  border: 1px solid #1d41b9;
+  background-color: #e98a31;
+  color:rgb(138, 74, 163);
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 15px;
+  width: 100%;
+  max-width: 500px; 
+  min-width: 300px;
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.insp-playlist-track-card:hover {
+  transform: translateY(-5px);
+}
+
+
 
 #generate-playlist {
   margin-top: 20px;

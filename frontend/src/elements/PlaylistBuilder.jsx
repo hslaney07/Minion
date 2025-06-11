@@ -1,7 +1,7 @@
 import "../css-files/sweet.css";
 import { useSelector, useDispatch } from 'react-redux';
 import PlaylistBuilderVisual from "../components/PlaylistBuilderVisual.jsx";
-import { updateInput, addSeed, removeSeed, setRecommendations, recommendationsRequested } from "../stores/playlistSlice.jsx";
+import { updateInput, addSeed, removeSeed, setRecommendations, recommendationsRequested, addInspiringPlaylists, clearInspiringPlaylists } from "../stores/playlistSlice.jsx";
 import { showError, showSuccess, showPlaylistCreationDialog} from '../services/alertServices.jsx';
 import { getPlaylistContent, searchForPlaylistItems, createPlaylist, addTracksToPlaylist} from '../helpers/SpotifyAPICalls.jsx';
 
@@ -9,7 +9,7 @@ const PlaylistBuilder = () => {
   const inputs = useSelector(state => state.playlist.inputs);
   const seeds = useSelector(state => state.playlist.seeds);
   const playlist = useSelector(state => state.playlist.playlist);
-  
+ 
   const dispatch = useDispatch();
 
   const handleArtistChange = (e) => {
@@ -95,7 +95,7 @@ const PlaylistBuilder = () => {
         showError('Need to provide at least one seed (artist, genre, or track)');
         return;
       }
-
+      dispatch(clearInspiringPlaylists())
       dispatch(recommendationsRequested(true))
 
       const tracksCollected = await collectTracksFromSeeds(seeds);
@@ -130,69 +130,91 @@ const PlaylistBuilder = () => {
     }
   };
 
-// Helper functions
-const hasValidSeeds = (seeds) => {
-  return seeds.artists.length > 0 || seeds.genres.length > 0 || seeds.tracks.length > 0;
-};
-
-const collectTracksFromSeeds = async (seeds) => {
-  const tracksCollected = {};
-
-  if (seeds.artists.length > 0) {
-    tracksCollected.Artists = await getTracksForSeedType(seeds.artists, 'artist');
+  const clearRecommendations = () => {
+    dispatch(clearInspiringPlaylists())
+    dispatch(recommendationsRequested(false))
+    dispatch(setRecommendations([]))
   }
 
-  if (seeds.tracks.length > 0) {
-    tracksCollected.Tracks = await getTracksForSeedType(seeds.tracks, 'track');
-  }
+  // Helper functions
+  const hasValidSeeds = (seeds) => {
+    return seeds.artists.length > 0 || seeds.genres.length > 0 || seeds.tracks.length > 0;
+  };
 
-  if (seeds.genres.length > 0) {
-    tracksCollected.Genres = await getTracksForSeedType(seeds.genres, 'tag');
-  }
+  const collectTracksFromSeeds = async (seeds) => {
+    const tracksCollected = {};
 
-  return tracksCollected;
-};
+    if (seeds.artists.length > 0) {
+      tracksCollected.Artists = await getTracksForSeedType(seeds.artists, 'artist');
+    }
 
-const getTracksForSeedType = async (items, searchType) => {
-  const tracks = {};
-  for (const item of items) {
-    tracks[item] = await getTracksFromSimilarPlaylists(`${searchType}:${encodeURIComponent(item)}`);
-  }
-  return tracks;
-};
+    if (seeds.tracks.length > 0) {
+      tracksCollected.Tracks = await getTracksForSeedType(seeds.tracks, 'track');
+    }
 
-const processTracks = (tracksCollected, limit) => {
-  const allSongs = new Map();
-  
-  const totalSubCategores = seeds.artists.length + seeds.genres.length + seeds.tracks.length
-  const numTracksEach = Math.ceil(limit / totalSubCategores);
+    if (seeds.genres.length > 0) {
+      tracksCollected.Genres = await getTracksForSeedType(seeds.genres, 'tag');
+    }
 
-  Object.values(tracksCollected).forEach(category => {
-    Object.values(category).forEach(tracks => {
-      const newTracks = shuffleArray([...tracks])
-        .filter(song => !allSongs.has(song.id))
-        .slice(0, numTracksEach);
-        
-      newTracks.forEach(song => allSongs.set(song.id, song));
+    return tracksCollected;
+  };
+
+  const getTracksForSeedType = async (items, searchType) => {
+    const tracks = {};
+    for (const item of items) {
+      tracks[item] = await getTracksFromSimilarPlaylists(`${searchType}:${encodeURIComponent(item)}`);
+    }
+    return tracks;
+  };
+
+  const processTracks = (tracksCollected, limit) => {
+    const allSongs = new Map();
+    
+    const totalSubCategores = seeds.artists.length + seeds.genres.length + seeds.tracks.length
+    const numTracksEach = Math.ceil(limit / totalSubCategores);
+
+    Object.values(tracksCollected).forEach(category => {
+      Object.values(category).forEach(tracks => {
+        const newTracks = shuffleArray([...tracks])
+          .filter(song => !allSongs.has(song.id))
+          .slice(0, numTracksEach);
+          
+        newTracks.forEach(song => allSongs.set(song.id, song));
+      });
     });
-  });
 
-  return Array.from(allSongs.values());
-};
+    return Array.from(allSongs.values());
+  };
+
+  const processInspiringPlaylists = (playlistItems) => {
+    const defaultImageUrl = "/default-playlist-image.jpg";
+
+    const processedPlaylists = playlistItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      externalUrl: item.external_urls?.spotify ?? '',
+      image: item.images?.[0]?.url || defaultImageUrl,
+    }));
+
+    dispatch(addInspiringPlaylists(processedPlaylists));
+  };
 
   const getTracksFromSimilarPlaylists = async (requestType) => {
     const playlist_items = await searchForPlaylistItems(requestType)
     if (playlist_items == null){
       return [];
     }
+  
     var playlistTracks = await getTracksFromPlaylists(playlist_items)
     return playlistTracks;
-
   }
 
   const getTracksFromPlaylists = async (playlists) => {
     // RIGHT NOW JUST top 3 playlists
     playlists = playlists.filter(item => item).map(item => item).slice(0,3);
+
+    processInspiringPlaylists(playlists)
 
     var playlistIDs = playlists.map(item => item.id);
 
@@ -227,7 +249,8 @@ const processTracks = (tracksCollected, limit) => {
     addTrack={addTrack}  removeTrack={removeTrack} handleTrackChange={handleTrackChange} 
     addGenre={addGenre} removeGenre={removeGenre} handleGenreChange={handleGenreChange} 
     addArtist={addArtist} removeArtist={removeArtist} handleArtistChange={handleArtistChange} 
-    removeTrackFromPlaylist={removeTrackFromPlaylist} handleCreatePlaylist={handleCreatePlaylist} getRecommendations={getRecommendations}>
+    removeTrackFromPlaylist={removeTrackFromPlaylist} handleCreatePlaylist={handleCreatePlaylist} 
+    getRecommendations={getRecommendations} clearRecommendations={clearRecommendations}>
     </PlaylistBuilderVisual>
   );
 };

@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   inputs: { artistName: '', genre: '', trackName: '' },
   seeds: { artists: [], genres: [], tracks: [] },
-  playlist: { limit: 30, recommendations: [], recommendationsRequested: false }
+  playlist: { limit: 30, recommendations: [], recommendationsRequested: false },
+  inspiringPlaylists: []
 };
 
 const playlistSlice = createSlice({
@@ -28,9 +29,19 @@ const playlistSlice = createSlice({
     },
     recommendationsRequested: (state, action) => {
       state.playlist.recommendationsRequested = action.payload
+    },
+    addInspiringPlaylists: (state, action) => {
+      const newPlaylists = action.payload;
+      const existingIds = new Set(state.inspiringPlaylists.map(p => p.id));
+      const uniqueNew = newPlaylists.filter(p => !existingIds.has(p.id));
+
+      state.inspiringPlaylists = [...state.inspiringPlaylists, ...uniqueNew];
+    },
+    clearInspiringPlaylists: (state) => {
+      state.inspiringPlaylists = [];
     }
   }
 });
 
-export const { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit, recommendationsRequested} = playlistSlice.actions;
+export const { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit, recommendationsRequested, clearInspiringPlaylists, addInspiringPlaylists} = playlistSlice.actions;
 export default playlistSlice.reducer ;

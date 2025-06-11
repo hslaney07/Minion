@@ -120,47 +120,106 @@ function EnterGenres({inputs, seeds, availableGenres, addGenre, removeGenre, han
   );
 }
 
-function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist}){
+function ClearRecommendationsButton({playlist, clearRecommendations}){
+  return (
+    <>
+      {playlist.recommendationsRequested && (<button className='clear-recommendations' onClick={clearRecommendations}>
+      Clear Recommendations
+      </button>)}
+    </>
+  );
+}
+
+function CreatePlaylistButton({handleCreatePlaylist}){
+  return(
+    <>  
+      <button id="create-playlist" className="create-playlist-button" onClick={handleCreatePlaylist}>
+        Create Playlist
+      </button>
+    </>
+  );
+}
+
+function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist, clearRecommendations}){
   if (playlist.recommendationsRequested && playlist.recommendations.length == 0){
     return (<LoadingSpinner />)
   }else{
     return(
-    <div className='container'>
-    {playlist.recommendations.length> 0 && (
-      <>
-      <div className="playlist-list">
-        {playlist.recommendations.map((track) => (
-          <div key={track.id} className="playlist-track-card">
-            <div className='track-info'>
-              <img
-                src={track.album.images[0].url}
-                alt={track.name}
-                className="playlist-album-image"
-              />
-              <div className="playlist-info">
-                <h3>{track.name}</h3>
-                <p>{track.artists.map((artist) => artist.name).join(', ')}</p>
-                <p>{track.album.name}</p>
+    <>
+      <div className='container'>
+      {playlist.recommendations.length> 0 && (
+        <>
+        <div className="playlist-list">
+          {playlist.recommendations.map((track) => (
+            <div key={track.id} className="playlist-track-card">
+              <div className='track-info'>
+                <img
+                  src={track.album.images[0].url}
+                  alt={track.name}
+                  className="playlist-album-image"
+                />
+                <div className="playlist-info">
+                  <h3>{track.name}</h3>
+                  <p>{track.artists.map((artist) => artist.name).join(', ')}</p>
+                  <p>{track.album.name}</p>
+                </div>
+                <button
+                  onClick={() => removeTrackFromPlaylist(track.id)} 
+                  className="remove-track-button"
+                  title="Remove this song from playlist"
+                >
+                  X
+                </button>
               </div>
-              <button
-                onClick={() => removeTrackFromPlaylist(track.id)} 
-                className="remove-track-button"
-                title="Remove this song from playlist"
-              >
-                X
-              </button>
             </div>
-          </div>
-         ))}
+          ))}
+        </div>
+        <CreatePlaylistButton handleCreatePlaylist={handleCreatePlaylist} />
+        </>
+      )}
       </div>
-      <button id="create-playlist" className="create-playlist-button" onClick={handleCreatePlaylist}>
-        Create Playlist
-      </button>
-      </>
-    )}
-    </div>);
+    </>
+    );
   }
 }
+
+function InspiringPlaylists({ inspiringPlaylists }) {
+  return (
+    <>
+      {inspiringPlaylists.length > 0 && (
+        <div className="inspiring-playlists-section">
+          <div className="section-bar" />
+          <h2 className="section-title">🎧 Inspiring Playlists</h2>
+          <div className="insp-playlist-list">
+            {inspiringPlaylists.map((playlist) => (
+              <div key={playlist.id} className="insp-playlist-track-card">
+                <div className="track-info">
+                  <img
+                    src={playlist.image}
+                    alt={playlist.name}
+                    className="playlist-album-image"
+                  />
+                  <div className="playlist-info">
+                    <h3>{playlist.name}</h3>
+                    <p>{playlist.description}</p>
+                    <p>
+                      <a href={playlist.externalUrl} target="_blank" rel="noopener noreferrer">
+                        <strong>Open Playlist</strong>
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      </>
+  );
+}
+
+
+
 
 export default function PlaylistBuilderVisual({
     addTrack, removeTrack, handleTrackChange,
@@ -168,11 +227,12 @@ export default function PlaylistBuilderVisual({
     addArtist, removeArtist, handleArtistChange, 
     removeTrackFromPlaylist,
     handleCreatePlaylist,
-    getRecommendations
+    getRecommendations, clearRecommendations
 }) {
   const inputs = useSelector(state => state.playlist.inputs);
   const seeds = useSelector(state => state.playlist.seeds);
   const playlist = useSelector(state => state.playlist.playlist);
+  const inspiringPlaylists = useSelector(state => state.playlist.inspiringPlaylists);
   const dispatch = useDispatch();
   const [availableGenres] = useState(AVAILABLE_GENRES);
   
@@ -185,9 +245,12 @@ export default function PlaylistBuilderVisual({
       addGenre={addGenre} removeGenre={removeGenre} handleGenreChange={handleGenreChange} 
       addArtist={addArtist} removeArtist={removeArtist} handleArtistChange={handleArtistChange} 
       getRecommendations={getRecommendations}></PlaylistHeader>
+      <ClearRecommendationsButton playlist={playlist} clearRecommendations={clearRecommendations} />
+      <InspiringPlaylists inspiringPlaylists={inspiringPlaylists} />
       <TrackResults 
       playlist={playlist}
-      handleCreatePlaylist={handleCreatePlaylist} removeTrackFromPlaylist={removeTrackFromPlaylist}></TrackResults>
+      handleCreatePlaylist={handleCreatePlaylist} removeTrackFromPlaylist={removeTrackFromPlaylist}
+      clearRecommendations={clearRecommendations}></TrackResults>
     </>
   );
 }
