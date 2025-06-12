@@ -10,7 +10,7 @@
   - If you're interested in trying it out, feel free to contact me via GitHub or email me at haley.slaney@gmail.com.
   - As of May 15th 2025, Spotify only allows organizations to use their "Extended Quota Mode" which doesn't require an allowlist. For more information on this, explore [here](https://developer.spotify.com/documentation/web-api/concepts/quota-modes)
 - **Initial Load May Be Slow**
-  - The backend is hosted on [Render](https://render.com/), which was chosen to handle requests to the Spotify API and manage secure cookies. (See below for reasoning.)
+  - The backend is hosted on Render, which was chosen to handle requests to the Spotify API and manage secure cookies. (See below for reasoning.)
   - However, Render puts free-tier services to sleep after 15 minutes of inactivity, causing the first request after a dormant period to take around 30–45 seconds to respond.
   - After this initial delay, subsequent requests should be fast and responsive.
 
@@ -32,3 +32,14 @@
   - Still working on expanding state usage and exploring new ways to leverage Redux hooks for more interactive features and better data handling.
 
 
+## Backend
+### [Render](https://render.com/)
+- Render is a cloud platform that simplifies hosting backend services and APIs. It provides a secure, scalable environment with easy deployment from Git repositories, automated SSL, and global availability.
+- It was chosen for similar reasons as Netlify:
+  - Easy deployment: Connects directly to GitHub for continuous deployment.
+  - Secure: Provides HTTPS by default, which is critical for handling sensitive authentication cookies.
+  - Scalable: Handles API requests reliably without complex infrastructure setup.
+  - Free tier: Offers a free solution for small projects and prototypes.
+- The backend hosted on Render acts as a proxy to the Spotify Web API, securely handling requests on behalf of the frontend.
+- It manages HTTP-only cookies to store sensitive Spotify access tokens and refresh tokens, enhancing security by keeping tokens out of the browser’s JavaScript context.
+- Render’s backend sleeps after periods of inactivity, which can cause a delay on the first request, but this trade-off is acceptable for this project's scale and cost constraints.
