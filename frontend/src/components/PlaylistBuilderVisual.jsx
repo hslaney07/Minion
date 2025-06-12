@@ -132,11 +132,11 @@ function ClearRecommendationsButton({playlist, clearRecommendations}){
 
 function CreatePlaylistButton({handleCreatePlaylist}){
   return(
-    <>  
+    <div className='container'>  
       <button id="create-playlist" className="create-playlist-button" onClick={handleCreatePlaylist}>
         Create Playlist
       </button>
-    </>
+    </div>
   );
 }
 
@@ -146,9 +146,11 @@ function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist, 
   }else{
     return(
     <>
-      <div className='container'>
+      <>
       {playlist.recommendations.length> 0 && (
-        <>
+        <div className='tracks-section'>
+        <div className="section-bar" />
+        <h2 className="track-results-title">🔥Your Recommended Tracks</h2>
         <div className="playlist-list">
           {playlist.recommendations.map((track) => (
             <div key={track.id} className="playlist-track-card">
@@ -175,9 +177,9 @@ function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist, 
           ))}
         </div>
         <CreatePlaylistButton handleCreatePlaylist={handleCreatePlaylist} />
-        </>
+        </div>
       )}
-      </div>
+      </>
     </>
     );
   }
