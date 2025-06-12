@@ -123,11 +123,12 @@ function EnterGenres({inputs, seeds, availableGenres, addGenre, removeGenre, han
 function ClearRecommendationsButton({playlist, clearRecommendations}){
   return (
     <>
-      {playlist.recommendationsRequested && (<button className='clear-recommendations' onClick={clearRecommendations}>
+      {(playlist.recommendationsRequested && playlist.recommendations.length > 0) && (<button className='clear-recommendations' onClick={clearRecommendations}>
       Clear Recommendations
       </button>)}
     </>
   );
+   
 }
 
 function CreatePlaylistButton({handleCreatePlaylist}){
@@ -140,15 +141,14 @@ function CreatePlaylistButton({handleCreatePlaylist}){
   );
 }
 
-function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist, clearRecommendations}){
+function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist}){
   if (playlist.recommendationsRequested && playlist.recommendations.length == 0){
     return (<LoadingSpinner />)
   }else{
     return(
     <>
-      <>
       {playlist.recommendations.length> 0 && (
-        <div className='tracks-section'>
+      <div className='tracks-section'>
         <div className="section-bar" />
         <h2 className="track-results-title">🔥Your Recommended Tracks</h2>
         <div className="playlist-list">
@@ -177,15 +177,48 @@ function TrackResults({playlist, handleCreatePlaylist, removeTrackFromPlaylist, 
           ))}
         </div>
         <CreatePlaylistButton handleCreatePlaylist={handleCreatePlaylist} />
-        </div>
+      </div>
       )}
-      </>
     </>
     );
   }
 }
 
-function InspiringPlaylists({ inspiringPlaylists }) {
+function OtherPlaylistsSection({otherPlaylistsOfInterest}){
+  return (
+  <>
+    {otherPlaylistsOfInterest.length > 0 && (
+    <div className="other-playlists-section">
+      <div className="section-bar" />
+      <h2 className="section-title">🎧 Other Playlists of Interest</h2>
+      <div className="insp-playlist-list">
+        {otherPlaylistsOfInterest.map((playlist) => (
+          <div key={playlist.id} className="insp-playlist-track-card">
+            <div className="track-info">
+              <img
+                src={playlist.image}
+                alt={playlist.name}
+                className="playlist-album-image"
+              />
+              <div className="playlist-info">
+                <h3>{playlist.name}</h3>
+                <p>{playlist.description}</p>
+                <p>
+                  <a href={playlist.externalUrl} target="_blank" rel="noopener noreferrer">
+                    <strong>Open Playlist</strong>
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+  </>);
+}
+
+function InspiringPlaylists({ inspiringPlaylists, otherPlaylistsOfInterest }) {
   return (
     <>
       {inspiringPlaylists.length > 0 && (
@@ -214,14 +247,12 @@ function InspiringPlaylists({ inspiringPlaylists }) {
               </div>
             ))}
           </div>
+          <OtherPlaylistsSection otherPlaylistsOfInterest={otherPlaylistsOfInterest} />
         </div>
       )}
       </>
   );
 }
-
-
-
 
 export default function PlaylistBuilderVisual({
     addTrack, removeTrack, handleTrackChange,
@@ -235,6 +266,7 @@ export default function PlaylistBuilderVisual({
   const seeds = useSelector(state => state.playlist.seeds);
   const playlist = useSelector(state => state.playlist.playlist);
   const inspiringPlaylists = useSelector(state => state.playlist.inspiringPlaylists);
+  const otherPlaylistsOfInterest = useSelector(state => state.playlist.otherPlaylistsOfInterest);
   const dispatch = useDispatch();
   const [availableGenres] = useState(AVAILABLE_GENRES);
   
@@ -248,11 +280,10 @@ export default function PlaylistBuilderVisual({
       addArtist={addArtist} removeArtist={removeArtist} handleArtistChange={handleArtistChange} 
       getRecommendations={getRecommendations}></PlaylistHeader>
       <ClearRecommendationsButton playlist={playlist} clearRecommendations={clearRecommendations} />
-      <InspiringPlaylists inspiringPlaylists={inspiringPlaylists} />
       <TrackResults 
       playlist={playlist}
-      handleCreatePlaylist={handleCreatePlaylist} removeTrackFromPlaylist={removeTrackFromPlaylist}
-      clearRecommendations={clearRecommendations}></TrackResults>
+      handleCreatePlaylist={handleCreatePlaylist} removeTrackFromPlaylist={removeTrackFromPlaylist}></TrackResults>
+      <InspiringPlaylists inspiringPlaylists={inspiringPlaylists} otherPlaylistsOfInterest={otherPlaylistsOfInterest}/>
     </>
   );
 }

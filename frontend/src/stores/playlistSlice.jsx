@@ -4,7 +4,8 @@ const initialState = {
   inputs: { artistName: '', genre: '', trackName: '' },
   seeds: { artists: [], genres: [], tracks: [] },
   playlist: { limit: 30, recommendations: [], recommendationsRequested: false },
-  inspiringPlaylists: []
+  inspiringPlaylists: [],
+  otherPlaylistsOfInterest: [],
 };
 
 const playlistSlice = createSlice({
@@ -39,9 +40,19 @@ const playlistSlice = createSlice({
     },
     clearInspiringPlaylists: (state) => {
       state.inspiringPlaylists = [];
+    },
+    addOtherPlaylistsOfInterest: (state, action) => {
+      const newPlaylists = action.payload;
+      const existingIds = new Set(state.otherPlaylistsOfInterest.map(p => p.id));
+      const uniqueNew = newPlaylists.filter(p => !existingIds.has(p.id));
+
+      state.otherPlaylistsOfInterest = [...state.otherPlaylistsOfInterest, ...uniqueNew];
+    },
+    clearOtherPlaylistsOfInterest: (state) => {
+      state.otherPlaylistsOfInterest = [];
     }
   }
 });
 
-export const { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit, recommendationsRequested, clearInspiringPlaylists, addInspiringPlaylists} = playlistSlice.actions;
+export const { updateInput, addSeed, removeSeed, setRecommendations, setPlaylistLimit, recommendationsRequested, clearInspiringPlaylists, addInspiringPlaylists, clearOtherPlaylistsOfInterest, addOtherPlaylistsOfInterest} = playlistSlice.actions;
 export default playlistSlice.reducer ;

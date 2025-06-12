@@ -1,7 +1,7 @@
 import "../css-files/sweet.css";
 import { useSelector, useDispatch } from 'react-redux';
 import PlaylistBuilderVisual from "../components/PlaylistBuilderVisual.jsx";
-import { updateInput, addSeed, removeSeed, setRecommendations, recommendationsRequested, addInspiringPlaylists, clearInspiringPlaylists } from "../stores/playlistSlice.jsx";
+import { updateInput, addSeed, removeSeed, setRecommendations, recommendationsRequested, addInspiringPlaylists, clearInspiringPlaylists, addOtherPlaylistsOfInterest, clearOtherPlaylistsOfInterest } from "../stores/playlistSlice.jsx";
 import { showError, showSuccess, showPlaylistCreationDialog} from '../services/alertServices.jsx';
 import { getPlaylistContent, searchForPlaylistItems, createPlaylist, addTracksToPlaylist} from '../helpers/SpotifyAPICalls.jsx';
 
@@ -96,6 +96,7 @@ const PlaylistBuilder = () => {
         return;
       }
       dispatch(clearInspiringPlaylists())
+      dispatch(clearOtherPlaylistsOfInterest())
       dispatch(recommendationsRequested(true))
 
       const tracksCollected = await collectTracksFromSeeds(seeds);
@@ -132,6 +133,7 @@ const PlaylistBuilder = () => {
 
   const clearRecommendations = () => {
     dispatch(clearInspiringPlaylists())
+    dispatch(clearOtherPlaylistsOfInterest())
     dispatch(recommendationsRequested(false))
     dispatch(setRecommendations([]))
   }
@@ -186,10 +188,10 @@ const PlaylistBuilder = () => {
     return Array.from(allSongs.values());
   };
 
-  const processInspiringPlaylists = (playlistItems) => {
+  const processInspiringPlaylists = (playlists) => {
     const defaultImageUrl = "/default-playlist-image.jpg";
 
-    const processedPlaylists = playlistItems.map(item => ({
+    const processedPlaylists = playlists.map(item => ({
       id: item.id,
       name: item.name,
       description: item.description,
@@ -197,7 +199,11 @@ const PlaylistBuilder = () => {
       image: item.images?.[0]?.url || defaultImageUrl,
     }));
 
-    dispatch(addInspiringPlaylists(processedPlaylists));
+    const playlistsToUse = processedPlaylists.filter(item => item).map(item => item).slice(0,3);
+    const remainingPlaylists = processedPlaylists.filter(item => item).map(item => item).slice(3);
+
+    dispatch(addInspiringPlaylists(playlistsToUse));
+    dispatch(addOtherPlaylistsOfInterest(remainingPlaylists));
   };
 
   const getTracksFromSimilarPlaylists = async (requestType) => {
@@ -212,27 +218,29 @@ const PlaylistBuilder = () => {
 
   const getTracksFromPlaylists = async (playlists) => {
     // RIGHT NOW JUST top 3 playlists
-    playlists = playlists.filter(item => item).map(item => item).slice(0,3);
+    const cleanedPlaylists = playlists.filter(Boolean);
+    console.log(cleanedPlaylists)
+    processInspiringPlaylists(cleanedPlaylists);
 
-    processInspiringPlaylists(playlists)
+    const playlistsToUse = cleanedPlaylists.filter(item => item).map(item => item).slice(0,3);
 
-    var playlistIDs = playlists.map(item => item.id);
+    var playlistIDs = playlistsToUse.map(item => item.id);
 
     const fetchPromises = playlistIDs.map(id => getPlaylistContent(id));
     
     try {
-    const allContents = await Promise.all(fetchPromises);
-    const validContents = allContents.filter(content => Array.isArray(content));
+      const allContents = await Promise.all(fetchPromises);
+      const validContents = allContents.filter(content => Array.isArray(content));
 
-    const uniqueContents = Array.from(
-      new Map(validContents.flat().map(track => [track.id, track])).values()
-    );
+      const uniqueContents = Array.from(
+        new Map(validContents.flat().map(track => [track.id, track])).values()
+      );
 
-    return uniqueContents;
-  } catch (error) {
-    showError(`Error fetching playlist contents`, `<a href="#">${error}</a>`);
-    return [];
-  }
+      return uniqueContents;
+    } catch (error) {
+      showError(`Error fetching playlist contents`, `<a href="#">${error}</a>`);
+      return [];
+    }
   }
 
   function shuffleArray(array) {

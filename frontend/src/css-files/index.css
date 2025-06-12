@@ -213,6 +213,11 @@
   transform: translateY(-5px);
 }
 
+.other-playlists-section {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
 /* track results section for playlist generator */
 .track-results-title {
   font-size: 1.75rem;
