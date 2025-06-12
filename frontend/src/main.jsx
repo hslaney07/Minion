@@ -9,6 +9,7 @@ import TopTracks from './elements/TopTracks';
 import TopArtists from './elements/TopArtists';
 import AccountInfo from './elements/AccountInfo';
 import PlaylistBuilder from './elements/PlaylistBuilder';
+import MusicPlaybackControl from './elements/MusicPlaybackControl';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const Main = () => (
@@ -21,6 +22,7 @@ const Main = () => (
         <Route path="/FavoriteArtists" element={<TopArtists />} />
         <Route path="/FavoriteTracks" element={<TopTracks />} />
         <Route path="/PlayListBuilder" element={<PlaylistBuilder />} />
+        <Route path="/MusicPlaybackControl" element={<MusicPlaybackControl />} />
       </Routes>
     </Router>
   </Provider>
