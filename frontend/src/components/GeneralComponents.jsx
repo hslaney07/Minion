@@ -26,6 +26,17 @@ export function NoDataAvailable({message}){
   );
 }
 
+export function ErrorLoadingPage(){
+  return (
+  <>
+    <Header />
+     <div className="no-data-available">
+        <p>Error Loading Page</p>
+     </div>
+  </>
+  );
+}
+
 export function LoadingSpinner(){
   return(<div className="no-data-available">
         <p>Loading Content...</p>

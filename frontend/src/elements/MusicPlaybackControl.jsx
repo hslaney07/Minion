@@ -1,17 +1,16 @@
 import * as ort from 'onnxruntime-web';
 import { useEffect, useState } from 'react';
-import { Header } from '../components/GeneralComponents';
-import CameraComponent from '../components/CameraComponent';
+import { useDispatch } from 'react-redux';
 import MusicPlaybackVisual from '../components/MusicPlaybackVisual';
+import { setMusicControlSlice } from '../stores/musicPlaybackSlice';
+import { ErrorLoadingPage, LoadingVisual } from '../components/GeneralComponents';
 
 const MusicPlaybackControl = () => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [gesture, setGesture] = useState("...");
-  const [action, setAction] = useState("...");
-  const [confidence, setConfidence] = useState(0);
+  const dispatch = useDispatch();
 
   const gestureLabels = [
     "Middle Finger", "Dislike", "Fist", "Four", "Like", 
@@ -20,7 +19,6 @@ const MusicPlaybackControl = () => {
   const labels = ['Magic', 'Volume Down', 'Mute', 'Skip', 
     'Volume Up', 'Play', 'Unmute', 'Rewind', 'Pause', "None"
   ];
-
 
   useEffect(() => {
     const loadModel = async () => {
@@ -123,30 +121,19 @@ const MusicPlaybackControl = () => {
       current.confidence > best.confidence ? current : best,
       { classId: -1, confidence: 0 }
     );
-    const action = labels[topDetection.classId];
+    const topDetectionInformation = {
+      gesture_label: topDetection.label,
+      action: labels[topDetection.classId],
+      confidence: (topDetection.confidence * 100).toFixed(1),
+    };
 
-    setAction(action)
-    setGesture(topDetection.label)
-    setConfidence((topDetection.confidence * 100).toFixed(1))
+    dispatch(setMusicControlSlice(topDetectionInformation))
   }
 
 
-
-  if (loading) return <div>Loading model...</div>;
-  if (error) return <div>Error loading model: {error}</div>;
-  return <div>
-      <Header />
-      <div className='gesture-action-section'>
-        <div className='gesture-action-child'>
-          <h2 className='gesture-text'>Gesture: {gesture} ({confidence}%)</h2>
-        </div>
-        <div className='gesture-action-child'>
-          <h2 className='action-text'>Action: {action}</h2>
-        </div>
-      </div>
-      <CameraComponent onFrame={handleFrame} />
-      
-    </div>;
+  if (loading) return <LoadingVisual />;
+  if (error) return <ErrorLoadingPage />;
+  return <MusicPlaybackVisual handleFrame={handleFrame}/>;
 };
 
 export default MusicPlaybackControl;

@@ -18,7 +18,7 @@ export default function CameraComponent({ onFrame }) {
     setupCamera();
   }, []);
 
-  // Pass video frame to parent at intervals
+  // pass video frame to parent at intervals
   useEffect(() => {
     const interval = setInterval(() => {
       if (videoRef.current && onFrame) {
