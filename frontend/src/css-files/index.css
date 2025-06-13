@@ -325,3 +325,31 @@
 #generate-playlist {
   margin-top: 20px;
 }
+
+
+
+/* Music Control */
+.gesture-action-section{
+   display: flex;
+   align-items: center;
+   background-color: #b8b4b7;
+}
+
+.gesture-action-child{
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.gesture-action-child:first-child{
+  margin-right: 20px;
+}
+
+.gesture-text{
+  color: #30df20;
+}
+
+.action-text{
+  color: #eee017;
+}
